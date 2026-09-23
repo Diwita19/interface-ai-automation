@@ -1,0 +1,16 @@
+# Local secrets and environment settings
+.env
+.env.*
+!.env.example
+
+# Python-generated files
+__pycache__/
+*.py[cod]
+
+# Local test and type-checker caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local development run records
+runs/

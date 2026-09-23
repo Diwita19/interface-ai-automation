@@ -1,0 +1,117 @@
+{
+  "evidence_version": 1,
+  "record_type": "sanitized_discovery_evidence",
+  "source_run_id": "054181a6079c4655972c901b3dc13ebc",
+  "source_record_sha256": "65c6bcc3d55c239ef717d380688d9601fe34b372d6ab7d94c25c1e8cd2a3aef5",
+  "source_record_status": "passed",
+  "capability_id": "get_savings_balance",
+  "capability_version": 1,
+  "goal": "Retrieve the requested member's savings account balance.",
+  "input_names": [
+    "member_id"
+  ],
+  "steps_executed": 8,
+  "history": [
+    {
+      "step": 1,
+      "page_path_template_before": "/",
+      "action": {
+        "kind": "fill",
+        "target_kind": "label"
+      },
+      "decision_context": "Supply a runtime input through the observed field.",
+      "decision_context_source": "static action description; not model reasoning",
+      "execution_status": "completed"
+    },
+    {
+      "step": 2,
+      "page_path_template_before": "/",
+      "action": {
+        "kind": "click",
+        "target_kind": "role"
+      },
+      "decision_context": "Navigate using an observed control.",
+      "decision_context_source": "static action description; not model reasoning",
+      "execution_status": "completed"
+    },
+    {
+      "step": 3,
+      "page_path_template_before": "/search",
+      "action": {
+        "kind": "click",
+        "target_kind": "role"
+      },
+      "decision_context": "Navigate using an observed control.",
+      "decision_context_source": "static action description; not model reasoning",
+      "execution_status": "completed"
+    },
+    {
+      "step": 4,
+      "page_path_template_before": "/members/{member_id}",
+      "action": {
+        "kind": "click",
+        "target_kind": "role"
+      },
+      "decision_context": "Navigate using an observed control.",
+      "decision_context_source": "static action description; not model reasoning",
+      "execution_status": "completed"
+    },
+    {
+      "step": 5,
+      "page_path_template_before": "/members/{member_id}/accounts/savings",
+      "action": {
+        "kind": "read",
+        "target_kind": "table_value"
+      },
+      "decision_context": "Collect a requested output from the observed page.",
+      "decision_context_source": "static action description; not model reasoning",
+      "execution_status": "completed"
+    },
+    {
+      "step": 6,
+      "page_path_template_before": "/members/{member_id}/accounts/savings",
+      "action": {
+        "kind": "read",
+        "target_kind": "table_value"
+      },
+      "decision_context": "Collect a requested output from the observed page.",
+      "decision_context_source": "static action description; not model reasoning",
+      "execution_status": "completed"
+    },
+    {
+      "step": 7,
+      "page_path_template_before": "/members/{member_id}/accounts/savings",
+      "action": {
+        "kind": "read",
+        "target_kind": "table_value"
+      },
+      "decision_context": "Collect a requested output from the observed page.",
+      "decision_context_source": "static action description; not model reasoning",
+      "execution_status": "completed"
+    },
+    {
+      "step": 8,
+      "page_path_template_before": "/members/{member_id}/accounts/savings",
+      "action": {
+        "kind": "read",
+        "target_kind": "table_value"
+      },
+      "decision_context": "Collect a requested output from the observed page.",
+      "decision_context_source": "static action description; not model reasoning",
+      "execution_status": "completed"
+    }
+  ],
+  "outputs": {
+    "account_type": "[REDACTED]",
+    "available_balance": "[REDACTED]",
+    "currency": "[REDACTED]",
+    "member_id": "[REDACTED]"
+  },
+  "redaction_policy": "discovery_structural_metadata_only_v1",
+  "compilation_source": false,
+  "limitations": [
+    "This is a sanitized derivative of the source record.",
+    "The source hash identifies the original bytes; it does not independently prove that a browser or model run occurred.",
+    "Decision context describes action purpose and is not a recorded model explanation."
+  ]
+}

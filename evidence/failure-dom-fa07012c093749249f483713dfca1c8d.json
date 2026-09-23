@@ -1,0 +1,239 @@
+{
+  "evidence_version": 1,
+  "kind": "sanitized_dom",
+  "captured_at": "2026-09-23T20:11:17.541418+00:00",
+  "redaction_policy": "demo_static_labels_only_v1",
+  "scope": "main_document_body",
+  "snapshot": {
+    "tree": {
+      "node": "element",
+      "tag": "body",
+      "children": [
+        {
+          "node": "element",
+          "tag": "header",
+          "children": [
+            {
+              "node": "element",
+              "tag": "div",
+              "children": [
+                {
+                  "node": "element",
+                  "tag": "p",
+                  "children": [
+                    {
+                      "node": "text",
+                      "text": "[REDACTED]"
+                    }
+                  ]
+                },
+                {
+                  "node": "element",
+                  "tag": "h1",
+                  "children": [
+                    {
+                      "node": "text",
+                      "text": "Demo Credit Union"
+                    }
+                  ]
+                },
+                {
+                  "node": "element",
+                  "tag": "p",
+                  "children": [
+                    {
+                      "node": "text",
+                      "text": "[REDACTED]"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "node": "element",
+          "tag": "main",
+          "children": [
+            {
+              "node": "element",
+              "tag": "section",
+              "children": [
+                {
+                  "node": "element",
+                  "tag": "h2",
+                  "children": [
+                    {
+                      "node": "text",
+                      "text": "Savings account"
+                    }
+                  ]
+                },
+                {
+                  "node": "element",
+                  "tag": "table",
+                  "children": [
+                    {
+                      "node": "element",
+                      "tag": "tbody",
+                      "children": [
+                        {
+                          "node": "element",
+                          "tag": "tr",
+                          "children": [
+                            {
+                              "node": "element",
+                              "tag": "th",
+                              "children": [
+                                {
+                                  "node": "text",
+                                  "text": "Member ID"
+                                }
+                              ]
+                            },
+                            {
+                              "node": "element",
+                              "tag": "td",
+                              "children": [
+                                {
+                                  "node": "text",
+                                  "text": "[REDACTED]"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "node": "element",
+                          "tag": "tr",
+                          "children": [
+                            {
+                              "node": "element",
+                              "tag": "th",
+                              "children": [
+                                {
+                                  "node": "text",
+                                  "text": "Account type"
+                                }
+                              ]
+                            },
+                            {
+                              "node": "element",
+                              "tag": "td",
+                              "children": [
+                                {
+                                  "node": "text",
+                                  "text": "[REDACTED]"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "node": "element",
+                          "tag": "tr",
+                          "children": [
+                            {
+                              "node": "element",
+                              "tag": "th",
+                              "children": [
+                                {
+                                  "node": "text",
+                                  "text": "Available balance"
+                                }
+                              ]
+                            },
+                            {
+                              "node": "element",
+                              "tag": "td",
+                              "children": [
+                                {
+                                  "node": "text",
+                                  "text": "[REDACTED]"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "node": "element",
+                          "tag": "tr",
+                          "children": [
+                            {
+                              "node": "element",
+                              "tag": "th",
+                              "children": [
+                                {
+                                  "node": "text",
+                                  "text": "Currency"
+                                }
+                              ]
+                            },
+                            {
+                              "node": "element",
+                              "tag": "td",
+                              "children": [
+                                {
+                                  "node": "text",
+                                  "text": "[REDACTED]"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "node": "element",
+                  "tag": "p",
+                  "children": [
+                    {
+                      "node": "element",
+                      "tag": "a",
+                      "children": [
+                        {
+                          "node": "text",
+                          "text": "Back to member"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "node": "element",
+                  "tag": "p",
+                  "children": [
+                    {
+                      "node": "element",
+                      "tag": "a",
+                      "children": [
+                        {
+                          "node": "text",
+                          "text": "Back to search"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "node": "element",
+          "tag": "footer",
+          "children": [
+            {
+              "node": "text",
+              "text": "[REDACTED]"
+            }
+          ]
+        }
+      ]
+    },
+    "truncated": false,
+    "visited_nodes": 81
+  }
+}

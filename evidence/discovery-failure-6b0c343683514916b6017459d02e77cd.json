@@ -1,0 +1,26 @@
+{
+  "status": "failed",
+  "mode": "llm_discovery_demo",
+  "outputs": {},
+  "error": {
+    "code": "unexpected_error",
+    "type": "RuntimeError",
+    "message": "An unexpected execution error occurred.",
+    "locations": [
+      {
+        "file": "discovery_demo.py",
+        "function": "run_demo",
+        "line": 286
+      }
+    ]
+  },
+  "failure_evidence": {
+    "status": "saved",
+    "kind": "sanitized_dom",
+    "file": "failure-dom-1bf413666a3a425eb05dc8ecf4db0186.json"
+  },
+  "events": [],
+  "report_version": 1,
+  "report_id": "6b0c343683514916b6017459d02e77cd",
+  "recorded_at": "2026-09-23T20:17:59.841727+00:00"
+}

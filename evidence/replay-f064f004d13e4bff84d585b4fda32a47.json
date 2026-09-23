@@ -1,0 +1,175 @@
+{
+  "status": "failed",
+  "mode": "deterministic_replay",
+  "outputs": {},
+  "error": {
+    "code": "target_not_found",
+    "type": "TargetResolutionError",
+    "message": "No matching target was found after waiting.",
+    "locations": [
+      {
+        "file": "replay_demo.py",
+        "function": "run_demo",
+        "line": 76
+      },
+      {
+        "file": "replay.py",
+        "function": "replay",
+        "line": 326
+      },
+      {
+        "file": "executor.py",
+        "function": "execute",
+        "line": 336
+      },
+      {
+        "file": "executor.py",
+        "function": "resolve_target",
+        "line": 286
+      },
+      {
+        "file": "executor.py",
+        "function": "_require_one",
+        "line": 174
+      }
+    ],
+    "target_resolution": {
+      "step_number": 4,
+      "planned_action": "click",
+      "target_kind": "role",
+      "component": "element",
+      "match_count_after_failure": 0
+    }
+  },
+  "capability_id": "get_savings_balance",
+  "capability_version": 1,
+  "elapsed_seconds": 9.86,
+  "failure_evidence": {
+    "status": "saved",
+    "kind": "sanitized_dom",
+    "file": "failure-dom-8539e52a66194d12b54c8f7bcd1911b1.json"
+  },
+  "events": [
+    {
+      "operation": "validation",
+      "reason": "Validate artifact inputs and policy before navigation.",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T00:20:41.017177+00:00"
+    },
+    {
+      "operation": "validation",
+      "reason": "Validate artifact inputs and policy before navigation.",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T00:20:41.025209+00:00",
+      "elapsed_seconds": "0.006"
+    },
+    {
+      "operation": "navigation",
+      "reason": "Open the capability's initial page.",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T00:20:41.025209+00:00"
+    },
+    {
+      "operation": "navigation",
+      "reason": "Open the capability's initial page.",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T00:20:41.989870+00:00",
+      "elapsed_seconds": "0.964"
+    },
+    {
+      "operation": "step",
+      "reason": "Fill the permitted field using a validated runtime input.",
+      "step": "1",
+      "action": "fill",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T00:20:41.989870+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Fill the permitted field using a validated runtime input.",
+      "step": "1",
+      "action": "fill",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T00:20:42.526017+00:00",
+      "elapsed_seconds": "0.543"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "2",
+      "action": "click",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T00:20:42.526017+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "2",
+      "action": "click",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T00:20:43.093498+00:00",
+      "elapsed_seconds": "0.562"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "3",
+      "action": "click",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T00:20:43.093498+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "3",
+      "action": "click",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T00:20:43.534958+00:00",
+      "elapsed_seconds": "0.446"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "4",
+      "action": "click",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T00:20:43.534958+00:00"
+    },
+    {
+      "event": "readiness_wait_started",
+      "condition": "unique_target",
+      "target_kind": "role",
+      "component": "element",
+      "initial_state": "missing",
+      "reason": "Wait for the saved target to satisfy readiness.",
+      "recorded_at": "2026-09-23T00:20:43.577919+00:00",
+      "step": "4",
+      "action": "click"
+    },
+    {
+      "event": "readiness_wait_failed",
+      "condition": "unique_target",
+      "target_kind": "role",
+      "component": "element",
+      "initial_state": "missing",
+      "reason": "Wait for the saved target to satisfy readiness.",
+      "recorded_at": "2026-09-23T00:20:48.585708+00:00",
+      "step": "4",
+      "action": "click",
+      "elapsed_seconds": "5.007"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "4",
+      "action": "click",
+      "event": "operation_failed",
+      "recorded_at": "2026-09-23T00:20:48.585708+00:00",
+      "elapsed_seconds": "5.051"
+    }
+  ],
+  "report_version": 1,
+  "run_id": "f064f004d13e4bff84d585b4fda32a47",
+  "recorded_at": "2026-09-23T00:20:49.303675+00:00",
+  "output_values_redacted": true
+}

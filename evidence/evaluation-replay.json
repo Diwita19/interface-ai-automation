@@ -1,0 +1,33 @@
+{
+  "evaluation_version": 1,
+  "created_at": "2026-09-23T20:11:19.580736+00:00",
+  "passed": 5,
+  "total": 5,
+  "cases": [
+    {
+      "case": "original_member",
+      "evaluation": "passed",
+      "report_file": "replay-78a078a880044a10a39ae2645d6e7352.json"
+    },
+    {
+      "case": "different_member",
+      "evaluation": "passed",
+      "report_file": "replay-68b8794bf85c411b82e56bd24bc847ba.json"
+    },
+    {
+      "case": "member_not_found",
+      "evaluation": "passed",
+      "report_file": "replay-c989a2a859c44ac2b295bf7fb0936ab0.json"
+    },
+    {
+      "case": "incorrect_expected_balance",
+      "evaluation": "passed",
+      "report_file": "replay-4b66bd5aaaef4acfa5bd7e9e111bb4d6.json"
+    },
+    {
+      "case": "invalid_member_format",
+      "evaluation": "passed",
+      "report_file": "replay-c0913f05e2334825985ce2b9f2062d1b.json"
+    }
+  ]
+}

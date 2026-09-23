@@ -1,0 +1,77 @@
+{
+  "status": "not_found",
+  "mode": "deterministic_replay",
+  "reason_code": "member_not_found",
+  "capability_id": "get_savings_balance",
+  "capability_version": 1,
+  "steps_executed": 2,
+  "outputs": {},
+  "elapsed_seconds": 1.8,
+  "events": [
+    {
+      "operation": "validation",
+      "reason": "Validate artifact inputs and policy before navigation.",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T20:11:12.869239+00:00"
+    },
+    {
+      "operation": "validation",
+      "reason": "Validate artifact inputs and policy before navigation.",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T20:11:12.871254+00:00",
+      "elapsed_seconds": "0.001"
+    },
+    {
+      "operation": "navigation",
+      "reason": "Open the capability's initial page.",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T20:11:12.871254+00:00"
+    },
+    {
+      "operation": "navigation",
+      "reason": "Open the capability's initial page.",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T20:11:13.264828+00:00",
+      "elapsed_seconds": "0.395"
+    },
+    {
+      "operation": "step",
+      "reason": "Fill the permitted field using a validated runtime input.",
+      "step": "1",
+      "action": "fill",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T20:11:13.264828+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Fill the permitted field using a validated runtime input.",
+      "step": "1",
+      "action": "fill",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T20:11:13.585179+00:00",
+      "elapsed_seconds": "0.322"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "2",
+      "action": "click",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T20:11:13.585179+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "2",
+      "action": "click",
+      "event": "operation_business_outcome",
+      "recorded_at": "2026-09-23T20:11:13.939051+00:00",
+      "elapsed_seconds": "0.355",
+      "outcome": "member_not_found"
+    }
+  ],
+  "report_version": 1,
+  "run_id": "c989a2a859c44ac2b295bf7fb0936ab0",
+  "recorded_at": "2026-09-23T20:11:14.241871+00:00",
+  "output_values_redacted": true
+}

@@ -1,0 +1,244 @@
+{
+  "status": "passed",
+  "mode": "deterministic_replay",
+  "capability_id": "get_savings_balance",
+  "capability_version": 1,
+  "steps_executed": 8,
+  "outputs": {
+    "member_id": "[REDACTED]",
+    "account_type": "[REDACTED]",
+    "available_balance": "[REDACTED]",
+    "currency": "[REDACTED]"
+  },
+  "elapsed_seconds": 19.8,
+  "events": [
+    {
+      "operation": "validation",
+      "reason": "Validate artifact inputs and policy before navigation.",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T20:06:37.510724+00:00"
+    },
+    {
+      "operation": "validation",
+      "reason": "Validate artifact inputs and policy before navigation.",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T20:06:37.513520+00:00",
+      "elapsed_seconds": "0.002"
+    },
+    {
+      "operation": "navigation",
+      "reason": "Open the capability's initial page.",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T20:06:37.513520+00:00"
+    },
+    {
+      "operation": "navigation",
+      "reason": "Open the capability's initial page.",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T20:06:37.994466+00:00",
+      "elapsed_seconds": "0.481"
+    },
+    {
+      "operation": "step",
+      "reason": "Fill the permitted field using a validated runtime input.",
+      "step": "1",
+      "action": "fill",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T20:06:37.994466+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Fill the permitted field using a validated runtime input.",
+      "step": "1",
+      "action": "fill",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T20:06:38.352659+00:00",
+      "elapsed_seconds": "0.366"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "2",
+      "action": "click",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T20:06:38.352659+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "2",
+      "action": "click",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T20:06:38.774337+00:00",
+      "elapsed_seconds": "0.414"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "3",
+      "action": "click",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T20:06:38.775354+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "3",
+      "action": "click",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T20:06:39.159848+00:00",
+      "elapsed_seconds": "0.391"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "4",
+      "action": "click",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T20:06:39.159848+00:00"
+    },
+    {
+      "event": "ownership_changed",
+      "from": "automation",
+      "to": "human",
+      "reason": "manual_review_required"
+    },
+    {
+      "event": "intervention_requested",
+      "capability_id": "get_savings_balance",
+      "goal": "Retrieve the requested member's savings balance.",
+      "step": "4",
+      "state": "manual_review_required",
+      "owner": "human",
+      "reason": "manual_review_required",
+      "required_action": "Review the request, acknowledge it, and submit in the browser; then enter resume or cancel.",
+      "resume_condition": "Captured acknowledgement and submission, followed by successful page and member-identity verification.",
+      "timeout_seconds": "180",
+      "recorded_at": "2026-09-23T20:06:39.538945+00:00"
+    },
+    {
+      "event": "human_action",
+      "action": "review_checked",
+      "step": "4",
+      "recorded_at": "2026-09-23T20:06:43.926011+00:00"
+    },
+    {
+      "event": "human_action",
+      "action": "review_submitted",
+      "step": "4",
+      "recorded_at": "2026-09-23T20:06:45.111677+00:00"
+    },
+    {
+      "event": "human_command",
+      "action": "resume_requested",
+      "step": "4",
+      "recorded_at": "2026-09-23T20:06:55.996525+00:00"
+    },
+    {
+      "event": "ownership_changed",
+      "from": "human",
+      "to": "stopped",
+      "reason": "resume_verification_started"
+    },
+    {
+      "event": "ownership_changed",
+      "from": "stopped",
+      "to": "automation",
+      "reason": "resume_verified"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "4",
+      "action": "click",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T20:06:56.082709+00:00",
+      "elapsed_seconds": "16.917"
+    },
+    {
+      "operation": "step",
+      "reason": "Read the permitted field into the declared output.",
+      "step": "5",
+      "action": "read",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T20:06:56.082709+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Read the permitted field into the declared output.",
+      "step": "5",
+      "action": "read",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T20:06:56.155989+00:00",
+      "elapsed_seconds": "0.073"
+    },
+    {
+      "operation": "step",
+      "reason": "Read the permitted field into the declared output.",
+      "step": "6",
+      "action": "read",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T20:06:56.155989+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Read the permitted field into the declared output.",
+      "step": "6",
+      "action": "read",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T20:06:56.246367+00:00",
+      "elapsed_seconds": "0.093"
+    },
+    {
+      "operation": "step",
+      "reason": "Read the permitted field into the declared output.",
+      "step": "7",
+      "action": "read",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T20:06:56.246367+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Read the permitted field into the declared output.",
+      "step": "7",
+      "action": "read",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T20:06:56.321007+00:00",
+      "elapsed_seconds": "0.077"
+    },
+    {
+      "operation": "step",
+      "reason": "Read the permitted field into the declared output.",
+      "step": "8",
+      "action": "read",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T20:06:56.321007+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Read the permitted field into the declared output.",
+      "step": "8",
+      "action": "read",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T20:06:56.396126+00:00",
+      "elapsed_seconds": "0.073"
+    },
+    {
+      "operation": "final_verification",
+      "reason": "Verify the final checkpoint and output rules.",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T20:06:56.396126+00:00"
+    },
+    {
+      "operation": "final_verification",
+      "reason": "Verify the final checkpoint and output rules.",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T20:06:56.504361+00:00",
+      "elapsed_seconds": "0.108"
+    }
+  ],
+  "report_version": 1,
+  "run_id": "e140457458d2465aa0534289f059fd34",
+  "recorded_at": "2026-09-23T20:06:56.787945+00:00",
+  "output_values_redacted": true
+}

@@ -1,0 +1,16 @@
+{
+  "evidence_version": 1,
+  "kind": "sanitized_dom",
+  "captured_at": "2026-09-23T20:11:19.196820+00:00",
+  "redaction_policy": "demo_static_labels_only_v1",
+  "scope": "main_document_body",
+  "snapshot": {
+    "tree": {
+      "node": "element",
+      "tag": "body",
+      "children": []
+    },
+    "truncated": false,
+    "visited_nodes": 1
+  }
+}
