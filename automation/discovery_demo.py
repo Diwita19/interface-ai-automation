@@ -3,38 +3,29 @@ import json
 import os
 import re
 import time
-from uuid import uuid4
-from pathlib import Path
 from datetime import datetime, timezone
-
-from automation.failure_evidence import capture_failure_evidence
-from automation.run_reporting import failure_result
+from pathlib import Path
+from uuid import uuid4
 
 from dotenv import load_dotenv
 from google import genai
 from playwright.sync_api import Page, expect, sync_playwright
 
+from automation.contracts import TableValueTarget
+from automation.discovery_logging import DiscoveryLog, safe_model_name
 from automation.executor import BrowserExecutor
+from automation.failure_evidence import capture_failure_evidence
 from automation.network_guard import NetworkGuard
 from automation.observer import observe_page
 from automation.planner import propose_action
 from automation.policy import Policy
-from automation.contracts import TableValueTarget
+from automation.run_reporting import failure_result
 
-
-BASE_URL = "http://127.0.0.1:8000"
-
-GOAL = (
-    "Find the savings account for the member identified by the "
-    "runtime member_id input. Collect these output fields: "
-    "member_id, account_type, available_balance, and currency."
-)
 
 BASE_URL = "http://127.0.0.1:8000"
 
 DEFAULT_GOAL = "Retrieve the member's savings account balance."
 
-# These are explicit supported goal phrasings for this demo.
 # The executor and compiler currently support this workflow only.
 SUPPORTED_GOALS = {
     "retrieve the member's savings account balance",
@@ -47,6 +38,17 @@ OUTPUT_REQUIREMENTS = (
     "Collect these output fields: member_id, account_type, "
     "available_balance, and currency."
 )
+
+MAX_STEPS = 12
+MODEL_REQUEST_GAP_SECONDS = 15
+
+REQUIRED_OUTPUTS = {
+    "member_id",
+    "account_type",
+    "available_balance",
+    "currency",
+}
+
 
 class DiscoveryRequestError(ValueError):
     """A rejected discovery input with a safe, predefined reason."""
@@ -67,6 +69,7 @@ class DiscoveryRequestError(ValueError):
         self.code = code
         self.safe_message = self.MESSAGES[code]
         super().__init__(self.safe_message)
+
 
 def validate_discovery_request(
     *,
@@ -111,15 +114,6 @@ def validate_discovery_request(
 
     return planner_goal, validated_entry_point
 
-MAX_STEPS = 12
-MODEL_REQUEST_GAP_SECONDS = 15
-
-REQUIRED_OUTPUTS = {
-    "member_id",
-    "account_type",
-    "available_balance",
-    "currency",
-}
 
 def verify_result(
     *,
@@ -131,7 +125,9 @@ def verify_result(
     """Verify the requested record against the current UI."""
 
     if set(outputs) != REQUIRED_OUTPUTS:
-        raise AssertionError("The output fields are incomplete or unexpected.")
+        raise AssertionError(
+            "The output fields are incomplete or unexpected."
+        )
 
     expected_identity = {
         "member_id": member_id,
@@ -145,7 +141,7 @@ def verify_result(
                 f"The extracted {name} does not match the requested record."
             )
 
-    # Validate the amount's format without converting money to a float.
+    # Validate money without converting it to a binary float.
     if re.fullmatch(
         r"-?[0-9]+\.[0-9]{2}",
         outputs["available_balance"],
@@ -167,7 +163,7 @@ def verify_result(
         "currency": "Currency",
     }
 
-    # Confirm the extracted record still matches the visible final page.
+    # Confirm the extracted values still match the final page.
     for output_name, row_label in row_labels.items():
         cell = executor.resolve_target(
             TableValueTarget(row_label=row_label)
@@ -175,13 +171,14 @@ def verify_result(
 
         expect(cell).to_have_text(outputs[output_name])
 
+
 def discovery_failure(
     *,
     error: Exception,
     page: Page | None,
     directory: Path,
 ) -> dict[str, object]:
-    """Describe a discovery failure without exposing raw exception text."""
+    """Describe failure without exposing raw exception text."""
 
     result = failure_result(error)
     result["mode"] = "llm_discovery_demo"
@@ -200,32 +197,112 @@ def discovery_failure(
 
     return result
 
-def run_demo(member_id: str, *, goal: str = DEFAULT_GOAL, entry_point: str = BASE_URL, evidence_dir: Path | None = None) -> dict[str, object]:
-    project_root = Path(__file__).resolve().parents[1]
+
+def check_discovery_network(guard: NetworkGuard) -> None:
+    """Stop if a guarded browser request was blocked or failed."""
+
+    if guard.blocked_requests:
+        raise RuntimeError(
+            "The network guard blocked a browser request."
+        )
+
+    if guard.transport_failures:
+        raise RuntimeError("A guarded browser request failed.")
+
+
+def run_demo(
+    member_id: str,
+    *,
+    goal: str = DEFAULT_GOAL,
+    entry_point: str = BASE_URL,
+    evidence_dir: Path | None = None,
+) -> dict[str, object]:
+    """Run discovery and save sanitized telemetry for either outcome."""
+
     if evidence_dir is None:
-        evidence_dir = project_root / "evidence"
+        evidence_dir = (
+            Path(__file__).resolve().parents[1] / "evidence"
+        )
 
-    policy = Policy.from_file(
-        project_root / "config" / "policy.json"
-    )
+    log = DiscoveryLog()
 
-    planner_goal, validated_entry_point = validate_discovery_request(
-        member_id=member_id,
-        goal=goal,
-        entry_point=entry_point,
-        policy=policy,
-    )
+    try:
+        result = _run_discovery(
+            member_id,
+            goal=goal,
+            entry_point=entry_point,
+            evidence_dir=evidence_dir,
+            log=log,
+        )
 
-    load_dotenv(project_root / ".env", override=False)
+    except Exception as error:
+        result = discovery_failure(
+            error=error,
+            page=None,
+            directory=evidence_dir,
+        )
 
-    api_key = os.getenv("GEMINI_API_KEY", "").strip()
-    model_name = os.getenv("GEMINI_MODEL", "").strip()
+    result["discovery_run_id"] = log.run_id
+    result["steps_executed"] = log.completed_steps
+    result["discovery_events"] = list(log.events)
+    result["failure_context"] = log.failure_context
 
-    if not api_key:
-        raise SystemExit("FAIL: GEMINI_API_KEY is missing.")
+    try:
+        path = log.save(result, evidence_dir)
+        result["discovery_log_path"] = str(path.resolve())
 
-    if not model_name:
-        raise SystemExit("FAIL: GEMINI_MODEL is missing.")
+    except OSError:
+        result["telemetry_error"] = {
+            "code": "discovery_log_write_failed",
+            "message": "The sanitized discovery log could not be saved.",
+        }
+
+        # A successful workflow without its required log is incomplete.
+        if result["status"] == "passed":
+            result["status"] = "failed"
+            result["outputs"] = {}
+            result["error"] = result["telemetry_error"]
+
+    return result
+
+
+def _run_discovery(
+    member_id: str,
+    *,
+    goal: str,
+    entry_point: str,
+    evidence_dir: Path,
+    log: DiscoveryLog,
+) -> dict[str, object]:
+    project_root = Path(__file__).resolve().parents[1]
+
+    with log.stage("validation"):
+        policy = Policy.from_file(
+            project_root / "config" / "policy.json"
+        )
+
+        planner_goal, validated_entry_point = (
+            validate_discovery_request(
+                member_id=member_id,
+                goal=goal,
+                entry_point=entry_point,
+                policy=policy,
+            )
+        )
+
+    with log.stage("configuration"):
+        load_dotenv(project_root / ".env", override=False)
+
+        api_key = os.getenv("GEMINI_API_KEY", "").strip()
+        model_name = os.getenv("GEMINI_MODEL", "").strip()
+
+        if not api_key:
+            raise ValueError("GEMINI_API_KEY is missing.")
+
+        if not model_name:
+            raise ValueError("GEMINI_MODEL is missing.")
+
+    log.model = safe_model_name(model_name)
 
     print("Discovery model configured.")
     print("Supported workflow: savings balance retrieval.")
@@ -233,47 +310,55 @@ def run_demo(member_id: str, *, goal: str = DEFAULT_GOAL, entry_point: str = BAS
     inputs = {"member_id": member_id}
     outputs: dict[str, str] = {}
 
-    client = genai.Client(api_key=api_key)
+    with log.stage("model_client_setup"):
+        client = genai.Client(api_key=api_key)
 
     try:
         with sync_playwright() as playwright:
-            browser = playwright.chromium.launch(
-                headless=False,
-                slow_mo=250,
-            )
+            with log.stage("browser_launch"):
+                browser = playwright.chromium.launch(
+                    headless=False,
+                    slow_mo=250,
+                )
+
             page = None
 
             try:
-                context = browser.new_context(
-                    service_workers="block",
-                    accept_downloads=False,
+                with log.stage("browser_setup"):
+                    context = browser.new_context(
+                        service_workers="block",
+                        accept_downloads=False,
+                    )
+
+                    network_guard = NetworkGuard(policy)
+                    network_guard.install(context)
+
+                    page = context.new_page()
+                    page.set_default_timeout(5000)
+                    page.set_default_navigation_timeout(10000)
+
+                with log.stage("navigation"):
+                    page.goto(validated_entry_point)
+
+                    expect(
+                        page.get_by_role(
+                            "heading",
+                            name="Member search",
+                            exact=True,
+                        )
+                    ).to_be_visible()
+
+                    check_discovery_network(network_guard)
+
+                executor = BrowserExecutor(
+                    page,
+                    policy,
+                    network_guard.control,
                 )
 
-                network_guard = NetworkGuard(policy)
-                network_guard.install(context)
-
-                page = context.new_page()
-                page.set_default_timeout(5000)
-                page.set_default_navigation_timeout(10000)
-
-                page.goto(validated_entry_point)
-
-                expect(
-                    page.get_by_role(
-                        "heading",
-                        name="Member search",
-                        exact=True,
-                    )
-                ).to_be_visible()
-
-                executor = BrowserExecutor(page, policy, network_guard.control)
                 history: list[dict[str, object]] = []
 
                 for step_number in range(1, MAX_STEPS + 1):
-                    policy.check_url(page.url)
-
-                    observation = observe_page(page)
-
                     print(f"\nDiscovery step {step_number}")
 
                     if step_number > 1:
@@ -283,48 +368,72 @@ def run_demo(member_id: str, *, goal: str = DEFAULT_GOAL, entry_point: str = BAS
                         )
                         time.sleep(MODEL_REQUEST_GAP_SECONDS)
 
-                    action = propose_action(
-                        client=client,
-                        model_name=model_name,
-                        goal=planner_goal,
-                        observation=observation,
-                        input_names=list(inputs),
-                        history=history,
-                        outputs=outputs,
-                    )
+                    # Observe after the delay so the model sees fresh state.
+                    with log.stage("observation", step=step_number):
+                        check_discovery_network(network_guard)
+                        policy.check_url(page.url)
+
+                        observation = observe_page(page)
+
+                        log.observed(
+                            step_number,
+                            observation.page_path,
+                        )
+
+                    # with log.stage("planning", step=step_number):
+                    #     action = propose_action(
+                    #         client=client,
+                    #         model_name=model_name,
+                    #         goal=planner_goal,
+                    #         observation=observation,
+                    #         input_names=list(inputs),
+                    #         history=history,
+                    #         outputs=outputs,
+                    #     )
+
+                    with log.stage("planning", step=step_number):
+                        action = propose_action(
+                            client=client,
+                            model_name=model_name,
+                            goal=planner_goal,
+                            observation=observation,
+                            input_names=list(inputs),
+                            history=history,
+                            outputs=outputs,
+                            on_event=lambda event: log.events.append(
+                                {
+                                    **event,
+                                    "step": step_number,
+                                }
+                            ),
+                        )
+
+                    log.proposed(step_number, action)
 
                     print(f"Validated model action: {action.kind}")
 
-                    # Reject unexpected output names before execution.
-                    if (
-                        action.kind == "read"
-                        and action.output_name not in REQUIRED_OUTPUTS
-                    ):
-                        raise ValueError(
-                            "The planner requested an unexpected output name."
+                    with log.stage("execution", step=step_number):
+                        # Reject unexpected output names before execution.
+                        if (
+                            action.kind == "read"
+                            and action.output_name not in REQUIRED_OUTPUTS
+                        ):
+                            raise ValueError(
+                                "The planner requested an unexpected "
+                                "output name."
+                            )
+
+                        executor.execute(
+                            action=action,
+                            inputs=inputs,
+                            outputs=outputs,
+                            step_number=step_number,
                         )
 
-                    executor.execute(
-                        action=action,
-                        inputs=inputs,
-                        outputs=outputs,
-                        step_number=step_number,
-                    )
+                        check_discovery_network(network_guard)
+                        policy.check_url(page.url)
 
-                    # A blocked request makes this discovery run fail.
-                    if network_guard.blocked_requests:
-                        raise RuntimeError(
-                            "The network guard blocked a browser request."
-                        )
-
-                    if network_guard.transport_failures:
-                        raise RuntimeError(
-                            "A guarded browser request failed."
-                        )
-
-                    policy.check_url(page.url)
-
-                    # Record only actions that executed successfully.
+                    # Compilation history contains only completed actions.
                     history.append(
                         {
                             "step": step_number,
@@ -333,19 +442,28 @@ def run_demo(member_id: str, *, goal: str = DEFAULT_GOAL, entry_point: str = BAS
                         }
                     )
 
-                    print(f"Output fields collected: "
-                        f"{len(outputs)}/{len(REQUIRED_OUTPUTS)}")
+                    log.completed_steps = len(history)
+
+                    print(
+                        "Output fields collected: "
+                        f"{len(outputs)}/{len(REQUIRED_OUTPUTS)}"
+                    )
 
                     if set(outputs) == REQUIRED_OUTPUTS:
-                        verify_result(
-                            page=page,
-                            executor=executor,
-                            outputs=outputs,
-                            member_id=member_id,
-                        )
+                        with log.stage(
+                            "verification",
+                            step=step_number,
+                        ):
+                            verify_result(
+                                page=page,
+                                executor=executor,
+                                outputs=outputs,
+                                member_id=member_id,
+                            )
 
-                        # Save only after the final verification succeeds.
-                        run_id = uuid4().hex
+                        # Keep the compilation record at version 1.
+                        # Detailed telemetry is stored separately.
+                        run_id = log.run_id
 
                         record = {
                             "record_version": 1,
@@ -359,28 +477,33 @@ def run_demo(member_id: str, *, goal: str = DEFAULT_GOAL, entry_point: str = BAS
                             "outputs": outputs,
                         }
 
-                        runs_directory = project_root / "runs"
-                        runs_directory.mkdir(
-                            parents=True,
-                            exist_ok=True,
-                        )
+                        with log.stage(
+                            "record_save",
+                            step=step_number,
+                        ):
+                            runs_directory = project_root / "runs"
 
-                        record_path = (
-                            runs_directory / f"discovery-{run_id}.json"
-                        )
-
-                        # Exclusive creation prevents overwriting a record.
-                        with record_path.open(
-                            "x",
-                            encoding="utf-8",
-                        ) as record_file:
-                            json.dump(
-                                record,
-                                record_file,
-                                indent=2,
-                                ensure_ascii=False,
+                            runs_directory.mkdir(
+                                parents=True,
+                                exist_ok=True,
                             )
-                            record_file.write("\n")
+
+                            record_path = (
+                                runs_directory
+                                / f"discovery-{run_id}.json"
+                            )
+
+                            with record_path.open(
+                                "x",
+                                encoding="utf-8",
+                            ) as record_file:
+                                json.dump(
+                                    record,
+                                    record_file,
+                                    indent=2,
+                                    ensure_ascii=False,
+                                )
+                                record_file.write("\n")
 
                         return {
                             "status": "passed",
@@ -391,20 +514,25 @@ def run_demo(member_id: str, *, goal: str = DEFAULT_GOAL, entry_point: str = BAS
                             "record_path": str(record_path),
                         }
 
-                raise RuntimeError(
-                    f"Discovery did not complete within {MAX_STEPS} steps."
-                )
+                with log.stage("step_limit"):
+                    raise RuntimeError(
+                        "Discovery did not complete within "
+                        f"{MAX_STEPS} steps."
+                    )
 
             except Exception as error:
-                # Capture while the failed page is still available.
+                # Capture evidence before the browser closes.
                 result = discovery_failure(
                     error=error,
                     page=page,
                     directory=evidence_dir,
                 )
-                result["events"] = list(
-                    network_guard.control.events
-                ) if page is not None else []
+
+                result["events"] = (
+                    list(network_guard.control.events)
+                    if page is not None
+                    else []
+                )
 
                 return result
 
@@ -446,7 +574,10 @@ def main() -> None:
         "--report-dir",
         type=Path,
         default=project_root / "evidence",
-        help="Directory for discovery failure reports and sanitized snapshots.",
+        help=(
+            "Directory for sanitized discovery logs, "
+            "failure reports, and snapshots."
+        ),
     )
 
     args = parser.parse_args()
@@ -460,7 +591,6 @@ def main() -> None:
         )
 
     except Exception as error:
-        # Input/configuration failures can occur before a page exists.
         result = discovery_failure(
             error=error,
             page=None,
@@ -498,7 +628,10 @@ def main() -> None:
                 / f"discovery-failure-{report_id}.json"
             )
 
-            with report_path.open("x", encoding="utf-8") as report_file:
+            with report_path.open(
+                "x",
+                encoding="utf-8",
+            ) as report_file:
                 json.dump(
                     report,
                     report_file,
@@ -507,12 +640,16 @@ def main() -> None:
                 )
                 report_file.write("\n")
 
-            public_result["report_path"] = str(report_path.resolve())
+            public_result["report_path"] = str(
+                report_path.resolve()
+            )
 
         except OSError:
             public_result["report_error"] = {
                 "code": "report_write_failed",
-                "message": "The discovery failure report could not be saved.",
+                "message": (
+                    "The discovery failure report could not be saved."
+                ),
             }
 
     print("\nDiscovery result:")

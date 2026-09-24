@@ -1,25 +1,29 @@
 import re
+from contextlib import contextmanager
+from datetime import datetime, timezone
 from string import Formatter
+from time import perf_counter
+from typing import Iterator
 from urllib.parse import quote
 
 from playwright.sync_api import Page, expect
 
-from automation.capability import Capability, PageCheckpoint
-from automation.contracts import FillAction, ReadAction, ClickAction
-from automation.executor import BrowserExecutor
-from automation.network_guard import NetworkGuard
-from automation.policy import Policy
 from automation.business_outcomes import (
     MemberNotFound,
     member_not_found_on_search,
 )
+from automation.capability import Capability, PageCheckpoint
+from automation.contracts import ClickAction, FillAction, ReadAction
+from automation.executor import BrowserExecutor
 from automation.handoff import wait_for_human_review
-from contextlib import contextmanager
-from datetime import datetime, timezone
-from time import perf_counter
-from typing import Iterator
-
+from automation.network_guard import NetworkGuard
+from automation.policy import Policy
 from automation.session_control import SessionControl
+from automation.verification import (
+    VerificationError,
+    verification_check,
+)
+
 
 def render_path(
     template: str,
@@ -37,10 +41,11 @@ def render_path(
         if name is None:
             continue
 
-        # Only exact input names are accepted.
-        # Attribute access and formatting expressions are not supported.
+        # Attribute access and formatting expressions are unsupported.
         if name not in inputs or format_spec or conversion:
-            raise ValueError("Unsupported path-template placeholder.")
+            raise ValueError(
+                "Unsupported path-template placeholder."
+            )
 
         parts.append(quote(inputs[name], safe=""))
 
@@ -52,7 +57,9 @@ def render_path(
         or "?" in path
         or "#" in path
     ):
-        raise ValueError("A checkpoint must contain an absolute URL path.")
+        raise ValueError(
+            "A checkpoint must contain an absolute URL path."
+        )
 
     return path
 
@@ -61,10 +68,14 @@ def check_network(guard: NetworkGuard) -> None:
     """Stop if the browser guard recorded a problem."""
 
     if guard.blocked_requests:
-        raise RuntimeError("The network guard blocked a browser request.")
+        raise RuntimeError(
+            "The network guard blocked a browser request."
+        )
 
     if guard.transport_failures:
-        raise RuntimeError("A guarded browser request failed.")
+        raise RuntimeError(
+            "A guarded browser request failed."
+        )
 
 
 def validate_replay(
@@ -75,7 +86,9 @@ def validate_replay(
     """Check inputs, permissions, and templates before navigation."""
 
     if set(inputs) != set(capability.inputs):
-        raise ValueError("Runtime inputs do not match capability inputs.")
+        raise ValueError(
+            "Runtime inputs do not match capability inputs."
+        )
 
     for name, definition in capability.inputs.items():
         value = inputs[name]
@@ -84,7 +97,9 @@ def validate_replay(
             raise ValueError(f"Input {name} must be a string.")
 
         if re.fullmatch(definition.pattern, value) is None:
-            raise ValueError(f"Input {name} has an invalid format.")
+            raise ValueError(
+                f"Input {name} has an invalid format."
+            )
 
     origin = policy.config.allowed_origin.rstrip("/")
     checkpoints = [capability.success]
@@ -96,7 +111,9 @@ def validate_replay(
             previous = capability.steps[index - 1]
 
             if previous.after != step.before:
-                raise ValueError("Adjacent step checkpoints do not match.")
+                raise ValueError(
+                    "Adjacent step checkpoints do not match."
+                )
 
         checkpoints.extend([step.before, step.after])
 
@@ -104,7 +121,7 @@ def validate_replay(
         path = render_path(checkpoint.path_template, inputs)
         policy.check_url(origin + path)
 
-        # Checkpoint reads must obey the same read permissions.
+        # Checkpoint reads obey the same permissions as action reads.
         for target in checkpoint.input_checks.values():
             policy.check_action(
                 ReadAction(
@@ -122,7 +139,6 @@ def validate_replay(
         )
 
         if definition.pattern is not None:
-            # Reject invalid regular expressions before execution.
             re.compile(definition.pattern)
 
 
@@ -133,6 +149,8 @@ def verify_checkpoint(
     checkpoint: PageCheckpoint,
     inputs: dict[str, str],
     policy: Policy,
+    phase: str = "final_checkpoint",
+    step_number: int | None = None,
 ) -> None:
     """Verify the expected URL, heading, and displayed identity."""
 
@@ -140,25 +158,43 @@ def verify_checkpoint(
     path = render_path(checkpoint.path_template, inputs)
     expected_url = origin + path
 
-    # Allow a query string, which the policy checks separately.
+    # Query strings are checked separately by policy.
     url_pattern = re.compile(
         r"^" + re.escape(expected_url) + r"(?:\?[^#]*)?$"
     )
 
-    expect(page).to_have_url(url_pattern)
+    with verification_check(
+        check="checkpoint_url",
+        phase=phase,
+        step_number=step_number,
+    ):
+        expect(page).to_have_url(url_pattern)
+
     policy.check_url(page.url)
 
-    expect(
-        page.get_by_role(
-            "heading",
-            name=checkpoint.heading,
-            exact=True,
-        )
-    ).to_be_visible()
+    with verification_check(
+        check="checkpoint_heading",
+        phase=phase,
+        step_number=step_number,
+    ):
+        expect(
+            page.get_by_role(
+                "heading",
+                name=checkpoint.heading,
+                exact=True,
+            )
+        ).to_be_visible()
 
     for input_name, target in checkpoint.input_checks.items():
         cell = executor.resolve_target(target)
-        expect(cell).to_have_text(inputs[input_name])
+
+        with verification_check(
+            check="checkpoint_identity",
+            phase=phase,
+            step_number=step_number,
+            field=input_name,
+        ):
+            expect(cell).to_have_text(inputs[input_name])
 
 
 def verify_outputs(
@@ -171,32 +207,47 @@ def verify_outputs(
     """Check extracted outputs against the artifact and final UI."""
 
     if set(outputs) != set(capability.outputs):
-        raise AssertionError("The extracted output fields are incomplete.")
+        raise VerificationError(
+            check="output_fields",
+            phase="final_outputs",
+        )
 
     for name, definition in capability.outputs.items():
         value = outputs[name]
 
         if definition.equals_input is not None:
             if value != inputs[definition.equals_input]:
-                raise AssertionError(
-                    f"Output {name} does not match its runtime input."
+                raise VerificationError(
+                    check="output_input",
+                    phase="final_outputs",
+                    field=name,
                 )
 
         if definition.equals_literal is not None:
             if value != definition.equals_literal:
-                raise AssertionError(
-                    f"Output {name} does not match its required value."
+                raise VerificationError(
+                    check="output_literal",
+                    phase="final_outputs",
+                    field=name,
                 )
 
         if definition.pattern is not None:
             if re.fullmatch(definition.pattern, value) is None:
-                raise AssertionError(
-                    f"Output {name} has an invalid format."
+                raise VerificationError(
+                    check="output_format",
+                    phase="final_outputs",
+                    field=name,
                 )
 
-        # Confirm that each extracted value matches the final page.
         cell = executor.resolve_target(definition.source)
-        expect(cell).to_have_text(value)
+
+        with verification_check(
+            check="output_page",
+            phase="final_outputs",
+            field=name,
+        ):
+            expect(cell).to_have_text(value)
+
 
 @contextmanager
 def record_replay_operation(
@@ -209,16 +260,28 @@ def record_replay_operation(
     """Record execution context without inputs or extracted values."""
 
     descriptions = {
-        "validation": "Validate artifact inputs and policy before navigation.",
+        "validation": (
+            "Validate artifact inputs and policy before navigation."
+        ),
         "navigation": "Open the capability's initial page.",
-        "step": "Execute the saved action and verify its checkpoints.",
-        "final_verification": "Verify the final checkpoint and output rules.",
+        "step": (
+            "Execute the saved action and verify its checkpoints."
+        ),
+        "final_verification": (
+            "Verify the final checkpoint and output rules."
+        ),
     }
 
     action_descriptions = {
-        "fill": "Fill the permitted field using a validated runtime input.",
-        "click": "Activate the saved target and verify the resulting state.",
-        "read": "Read the permitted field into the declared output.",
+        "fill": (
+            "Fill the permitted field using a validated runtime input."
+        ),
+        "click": (
+            "Activate the saved target and verify the resulting state."
+        ),
+        "read": (
+            "Read the permitted field into the declared output."
+        ),
     }
 
     context = {
@@ -230,12 +293,12 @@ def record_replay_operation(
         context["step"] = str(step_number)
 
     if action_kind is not None:
-        # Never copy arbitrary artifact text into the event log.
         context["action"] = (
             action_kind
             if action_kind in action_descriptions
             else "unsupported"
         )
+
         context["reason"] = action_descriptions.get(
             action_kind,
             descriptions[operation],
@@ -249,7 +312,9 @@ def record_replay_operation(
         }
 
         if elapsed:
-            entry["elapsed_seconds"] = f"{perf_counter() - started:.3f}"
+            entry["elapsed_seconds"] = (
+                f"{perf_counter() - started:.3f}"
+            )
 
         control.events.append(entry)
 
@@ -264,14 +329,26 @@ def record_replay_operation(
         control.events[-1]["outcome"] = "member_not_found"
         raise
 
+    except VerificationError as error:
+        emit("operation_failed", elapsed=True)
+
+        control.events[-1]["verification_check"] = str(
+            error.details["check"]
+        )
+        control.events[-1]["verification_phase"] = str(
+            error.details["phase"]
+        )
+
+        raise
+
     except Exception:
-        # The existing run reporter classifies the original exception.
-        # Do not include exception text, URLs, or page content here.
+        # Preserve the exception's existing classification.
         emit("operation_failed", elapsed=True)
         raise
 
     else:
         emit("operation_completed", elapsed=True)
+
 
 def replay(
     *,
@@ -313,7 +390,9 @@ def replay(
             step_number=step_number,
             action_kind=step.action.kind,
         ):
-            print(f"Replay step {step_number}: {step.action.kind}")
+            print(
+                f"Replay step {step_number}: {step.action.kind}"
+            )
 
             verify_checkpoint(
                 page=page,
@@ -321,6 +400,8 @@ def replay(
                 checkpoint=step.before,
                 inputs=inputs,
                 policy=policy,
+                phase="before_action",
+                step_number=step_number,
             )
 
             executor.execute(
@@ -332,8 +413,7 @@ def replay(
 
             check_network(guard)
 
-            # The saved navigation may encounter a manual-review gate
-            # before reaching its expected savings checkpoint.
+            # The saved navigation may encounter the known review gate.
             if (
                 capability.capability_id == "get_savings_balance"
                 and isinstance(step.action, ClickAction)
@@ -349,8 +429,19 @@ def replay(
                     ),
                 )
 
-                expect(outcome_heading).to_have_count(1)
-                expect(outcome_heading).to_be_visible()
+                with verification_check(
+                    check="review_outcome_count",
+                    phase="review_detection",
+                    step_number=step_number,
+                ):
+                    expect(outcome_heading).to_have_count(1)
+
+                with verification_check(
+                    check="review_outcome_visibility",
+                    phase="review_detection",
+                    step_number=step_number,
+                ):
+                    expect(outcome_heading).to_be_visible()
 
                 review_heading = page.get_by_role(
                     "heading",
@@ -367,6 +458,8 @@ def replay(
                             checkpoint=step.after,
                             inputs=inputs,
                             policy=policy,
+                            phase="resume_verification",
+                            step_number=step_number,
                         )
 
                     wait_for_human_review(
@@ -402,13 +495,19 @@ def replay(
                         steps_executed=step_number,
                     )
 
-            # A page checkpoint alone cannot verify a field was filled.
+            # A page checkpoint alone cannot verify a filled field.
             if isinstance(step.action, FillAction):
                 field = executor.resolve_target(step.action.target)
 
-                expect(field).to_have_value(
-                    inputs[step.action.input_name]
-                )
+                with verification_check(
+                    check="filled_value",
+                    phase="action_verification",
+                    step_number=step_number,
+                    field=step.action.input_name,
+                ):
+                    expect(field).to_have_value(
+                        inputs[step.action.input_name]
+                    )
 
             verify_checkpoint(
                 page=page,
@@ -416,6 +515,8 @@ def replay(
                 checkpoint=step.after,
                 inputs=inputs,
                 policy=policy,
+                phase="after_action",
+                step_number=step_number,
             )
 
             check_network(guard)

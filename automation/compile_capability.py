@@ -20,6 +20,7 @@ from automation.contracts import (
     StrictModel,
     TableValueTarget,
 )
+from automation.discovery_logging import safe_action, safe_model_name
 
 
 class RecordedStep(StrictModel):
@@ -47,6 +48,7 @@ class DiscoveryRecord(StrictModel):
         min_length=1,
         max_length=12,
     )
+
     outputs: dict[str, str]
 
 
@@ -160,6 +162,7 @@ def compile_record(
     final_path = (
         f"/members/{member_id}/accounts/savings"
     )
+
     last = record.history[-1]
 
     if (
@@ -184,10 +187,11 @@ def compile_record(
         for name, label in labels.items()
     }
 
-    # Store reusable result rules, not this run's result values.
+    # Store reusable rules rather than this run's extracted values.
     output_definitions["member_id"].equals_input = "member_id"
     output_definitions["account_type"].equals_literal = "Savings"
     output_definitions["currency"].equals_literal = "USD"
+
     output_definitions["available_balance"].pattern = (
         r"-?[0-9]+\.[0-9]{2}"
     )
@@ -195,7 +199,7 @@ def compile_record(
     steps = []
 
     for index, entry in enumerate(record.history):
-        # The next observed page is the current action's resulting state.
+        # The next observation supplies this action's resulting state.
         if index + 1 < len(checkpoints):
             after = checkpoints[index + 1]
         else:
@@ -224,6 +228,7 @@ def compile_record(
         success=success,
     )
 
+
 def build_discovery_evidence(
     *,
     record: DiscoveryRecord,
@@ -247,8 +252,6 @@ def build_discovery_evidence(
     ):
         action = recorded_step.action
 
-        # Copy structural categories only.
-        # Do not copy arbitrary target names or model-generated text.
         if action.kind not in action_reasons:
             raise ValueError("Unsupported evidence action kind.")
 
@@ -257,16 +260,14 @@ def build_discovery_evidence(
         if target_kind not in {"label", "role", "table_value"}:
             raise ValueError("Unsupported evidence target kind.")
 
+        # Preserve fixed demo labels; redact unknown target names.
         history.append(
             {
                 "step": recorded_step.step,
                 "page_path_template_before": (
                     compiled_step.before.path_template
                 ),
-                "action": {
-                    "kind": action.kind,
-                    "target_kind": target_kind,
-                },
+                "action": safe_action(action),
                 "decision_context": action_reasons[action.kind],
                 "decision_context_source": (
                     "static action description; not model reasoning"
@@ -276,14 +277,17 @@ def build_discovery_evidence(
         )
 
     return {
-        "evidence_version": 1,
+        "evidence_version": 2,
         "record_type": "sanitized_discovery_evidence",
         "source_run_id": record.run_id,
         "source_record_sha256": source_hash,
         "source_record_status": record.status,
+        "model": safe_model_name(record.model),
         "capability_id": capability.capability_id,
         "capability_version": capability.capability_version,
-        "goal": "Retrieve the requested member's savings account balance.",
+        "goal": (
+            "Retrieve the requested member's savings account balance."
+        ),
         "input_names": ["member_id"],
         "steps_executed": len(history),
         "history": history,
@@ -291,7 +295,9 @@ def build_discovery_evidence(
             name: "[REDACTED]"
             for name in sorted(capability.outputs)
         },
-        "redaction_policy": "discovery_structural_metadata_only_v1",
+        "redaction_policy": (
+            "discovery_fixed_labels_and_templates_v1"
+        ),
         "compilation_source": False,
         "limitations": [
             "This is a sanitized derivative of the source record.",
@@ -301,6 +307,7 @@ def build_discovery_evidence(
             "a recorded model explanation.",
         ],
     }
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(
@@ -344,7 +351,9 @@ def main() -> None:
     ]
 
     if len(set(resolved_destinations)) != len(resolved_destinations):
-        parser.error("Capability and evidence destinations must differ.")
+        parser.error(
+            "Capability and evidence destinations must differ."
+        )
 
     if args.record.resolve() in resolved_destinations:
         parser.error("An output cannot replace the source record.")
@@ -379,7 +388,7 @@ def main() -> None:
             "Capability JSON round-trip validation failed."
         )
 
-    # Build and serialize evidence before writing any outputs.
+    # Serialize evidence before writing either destination.
     evidence_payload = None
 
     if args.evidence_output is not None:

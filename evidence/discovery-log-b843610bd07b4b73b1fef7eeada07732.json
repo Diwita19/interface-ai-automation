@@ -1,0 +1,43 @@
+{
+  "evidence_version": 1,
+  "record_type": "sanitized_discovery_log",
+  "run_id": "b843610bd07b4b73b1fef7eeada07732",
+  "status": "failed",
+  "model": "not_configured",
+  "started_at": "2026-09-23T22:01:02.582466+00:00",
+  "recorded_at": "2026-09-23T22:01:02.591795+00:00",
+  "elapsed_seconds": 0.009,
+  "steps_executed": 0,
+  "failure_context": {
+    "phase": "validation"
+  },
+  "events": [
+    {
+      "phase": "validation",
+      "event": "stage_started",
+      "recorded_at": "2026-09-23T22:01:02.583471+00:00"
+    },
+    {
+      "phase": "validation",
+      "event": "stage_failed",
+      "recorded_at": "2026-09-23T22:01:02.590792+00:00",
+      "elapsed_seconds": 0.008
+    }
+  ],
+  "outputs": {},
+  "redaction_policy": "discovery_fixed_labels_and_templates_v1",
+  "compilation_source": false,
+  "limitations": [
+    "Planning events record calls to the planner, not provider attestations.",
+    "Action purposes are static descriptions, not recorded model reasoning."
+  ],
+  "error": {
+    "code": "invalid_member_id",
+    "type": "DiscoveryRequestError",
+    "message": "The member ID must contain exactly five ASCII digits."
+  },
+  "failure_evidence": {
+    "status": "unavailable",
+    "reason": "page_not_created"
+  }
+}

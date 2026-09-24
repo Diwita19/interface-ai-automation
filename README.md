@@ -1,62 +1,57 @@
 # Computer-Use Automation System
 
-This project demonstrates how an AI-discovered browser workflow can become a reusable automation capability. It uses a synthetic credit-union application to look up a member and retrieve their savings account balance.
+This project turns a workflow discovered through a browser into a reusable automation capability. The demonstration retrieves a member's savings balance from a synthetic credit-union application.
 
-Gemini explores the application through its live UI and proposes individual actions. A compiler turns the successful run into a typed, parameterized capability. That capability can then be replayed for another member without calling the model. If the application requires manual review, the operator can take over the same browser session and return control after completing the review.
+Gemini observes the live UI and proposes individual actions. After discovery succeeds, a compiler produces a typed capability containing the actions, runtime inputs, checkpoints, and output rules. Replay follows that capability without model decisions. When manual review is required, the operator takes over the same browser session and returns control after verification.
 
-The application contains synthetic data only. All account lookups happen through browser interactions.
+All account lookups use browser interactions. The automation does not read the application's data dictionary or call a business API.
 
-## What the demo includes
+## What is implemented
 
-- Live discovery using Gemini and Playwright.
-- A versioned capability with input parameters, actions, checkpoints, and output rules.
-- Model-free replay with identity and result verification.
-- Separate handling for successful lookups, missing members, and execution failures.
-- Bounded waiting for temporarily unavailable controls.
-- Human review with session ownership tracking and verified resume.
-- Structured run reports and sanitized DOM snapshots on failure.
+- Gemini discovery through Playwright, with a 12-action limit.
+- Versioned capabilities with parameterized inputs and verified outputs.
+- Replay with planner and Gemini SDK imports blocked.
+- Separate outcomes for successful retrieval, missing members, and execution failures.
+- Bounded waits for UI readiness and bounded retries for selected Gemini server errors.
+- Same-session human review with ownership tracking and verified resume.
+- Sanitized discovery logs, structured verification errors, and DOM failure snapshots.
 
-The implemented workflow is savings-balance retrieval. Desktop support and reuse across institutions are covered in [REPORT.md](REPORT.md) as design extensions.
+The implemented workflow is savings-balance retrieval. [REPORT.md](REPORT.md) describes the architecture, trade-offs, and proposed extensions for desktop applications and multiple institutions.
 
-## Requirements and setup
+## Setup
 
-The project was developed and tested on Windows using PowerShell, Conda, and Python 3.12. Browser runs open a visible Chromium window, so a desktop session is required.
-
-Clone the repository and enter the project directory:
+The demonstrated environment is Windows PowerShell, Conda, and Python 3.12. Browser runs open a visible Chromium window, so a desktop session is required.
 
 ```powershell
 git clone https://github.com/Diwita19/interface-ai-automation.git
 cd interface-ai-automation
-```
 
-Create the environment and install dependencies:
-
-```powershell
 conda create -n interface-ai python=3.12 -y
 conda activate interface-ai
+
 python -m pip install -r requirements.txt
 python -m playwright install chromium
 python -m pip check
 ```
 
-If the environment already exists, activate it and continue with installation. `requirements.txt` pins the six direct dependencies; it does not lock every transitive dependency.
+If the environment already exists, activate it and continue with installation. The requirements file pins direct dependencies; it is not a complete transitive lockfile.
 
 ### Gemini configuration
 
-Live discovery requires a Gemini API key. Create a `.env` file in the project root:
+Live discovery requires a Gemini API key. Create a local `.env` file in the project root:
 
 ```dotenv
 GEMINI_API_KEY=replace_with_your_own_key
 GEMINI_MODEL=gemini-2.5-flash
 ```
 
-The recorded discovery used `gemini-2.5-flash`. Model access, quotas, and charges depend on the provider account. Existing environment variables take precedence over `.env`.
+The recorded discovery used `gemini-2.5-flash`. Provider access, quotas, and charges depend on the account. Existing environment variables take precedence over `.env`.
 
-The `.env` file is excluded from Git. Compilation and replay do not require a Gemini key or a live model service.
+The `.env` file is excluded from Git. Compilation and replay require no Gemini credentials or live model service.
 
 ## Start the application
 
-Run the application in one terminal:
+In the first terminal:
 
 ```powershell
 conda activate interface-ai
@@ -65,46 +60,46 @@ $env:DEMO_REQUIRE_REVIEW = "0"
 python -m uvicorn demo_app.main:app --host 127.0.0.1 --port 8000 --no-access-log
 ```
 
-Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/) to view the application.
+The application runs at http://127.0.0.1:8000/.
 
-Keep this terminal running and use a second terminal for automation commands. Activate `interface-ai` in that terminal as well. Restart the server whenever you change a fixture setting.
+Leave this terminal running. Use a second terminal in the repository root, with `interface-ai` activated, for automation commands.
 
-Use a single server process because the demo stores review sessions in memory.
+Restart the server after changing fixture settings. Use one server process because review sessions are stored in memory.
 
-## Run the saved capability
+## Replay the saved capability
 
-The repository includes a capability from a successful discovery run. Replay it without a live model:
+Run the capability from the latest successful discovery:
 
 ```powershell
-python -m automation.replay_without_model --capability capabilities/get_savings_balance.discovery-054181a6.json --member-id 10001 --expected-balance 1250.50 --report-dir evidence
+python -m automation.replay_without_model --capability capabilities/get_savings_balance.discovery-333ac195.json --member-id 10001 --expected-balance 1250.50 --report-dir evidence
 $LASTEXITCODE
 ```
 
-A successful run completes eight steps, returns the account fields, and exits with code `0`. The wrapper blocks planner and Gemini SDK imports and removes Gemini environment credentials from the replay process.
+Expected result: `passed`, eight completed steps, and exit code `0`.
 
-This capability was discovered using member `10002` and then replayed using member `10001`.
+This capability was discovered using member `10002` and successfully replayed using member `10001`. The wrapper blocks planner and Gemini SDK imports and removes Gemini environment credentials from the replay process.
 
-| Synthetic member | Savings balance |
-| --- | --- |
-| `10001` | `1250.50` |
-| `10002` | `987.65` |
+| Synthetic member | Savings balance | Currency |
+| --- | --- | --- |
+| `10001` | `1250.50` | USD |
+| `10002` | `987.65` | USD |
 
-`--expected-balance` is an optional test assertion. It is not supplied to the replay engine as a workflow input.
+The optional `--expected-balance` argument is a test assertion. It is not a workflow input supplied to the replay engine.
 
-## Discover and compile a new workflow
+## Discover and compile a capability
 
-With the application running in normal mode and review disabled, start discovery:
+Keep the server in normal mode with review disabled:
 
 ```powershell
-python -m automation.discovery_demo --member-id 10002 --goal "Retrieve the member's savings account balance." --entry-point "http://127.0.0.1:8000/"
+python -m automation.discovery_demo --member-id 10002 --goal "Retrieve the member's savings account balance." --entry-point "http://127.0.0.1:8000/" --report-dir evidence
 $LASTEXITCODE
 ```
 
-Discovery observes the page, requests an action from Gemini, validates it, and executes it. The loop allows up to 12 actions and pauses 15 seconds between model requests.
+Discovery observes the page, requests a typed action, validates it, and executes it. It allows at most 12 actions, with a 15-second pause between successive planning steps.
 
-The goal input currently accepts the supported retrieve/get/find phrasings for the member's savings account balance. The entry point must be the approved application's root URL. These limits match the implemented verifier and compiler.
+The goal accepts the supported retrieve/get/find phrasings for the member's savings account balance. The entry point must be the approved application's root URL. The verifier and compiler currently support this workflow only.
 
-When discovery succeeds, it prints a `record_path`. Use that exact path below:
+A successful run prints a `record_path` and a `discovery_log_path`. Use the exact record path to compile:
 
 ```powershell
 $discoveryRecord = "runs/discovery-REPLACE_WITH_PRINTED_RUN_ID.json"
@@ -113,23 +108,33 @@ python -m automation.compile_capability --record $discoveryRecord --output capab
 $LASTEXITCODE
 ```
 
-After compilation succeeds, replay the new capability for another member:
+After compilation succeeds:
 
 ```powershell
 python -m automation.replay_without_model --capability capabilities/get_savings_balance.new.json --member-id 10001 --expected-balance 1250.50 --report-dir evidence
 $LASTEXITCODE
 ```
 
-The compiler creates both a capability and a sanitized discovery summary. It refuses to overwrite existing output files, so choose new filenames when repeating this process.
+The compiler refuses to overwrite existing output files. Choose new filenames for subsequent compilations.
 
-Compilation requires the original discovery record. The sanitized summary is intended for review and cannot replace that input.
+Compilation requires the original discovery record. The sanitized summary and diagnostic log are review evidence, not compilation inputs.
+
+### Discovery diagnostics and provider errors
+
+Discovery records stage transitions, timings, sanitized page paths, proposed actions, and model-request attempts. Failed runs retain the completed-step count and identify the failing phase and step. A sanitized DOM snapshot is captured when a page is available.
+
+Gemini HTTP errors `500`, `502`, `503`, and `504` receive at most three application-level attempts, with delays of 5 and 10 seconds. Each attempt has a configured 30-second request timeout, and SDK retries are disabled to avoid nested retry loops. Other API errors are reported without application-level retries.
+
+Retries apply to model requests. They do not repeat browser actions.
+
+Controlled tests verified recovery from a simulated `503` on the second attempt and a structured stop after three simulated `503` responses. The latest live discovery completed all eight model requests on their first attempt; it did not need retries.
 
 ## Test outcomes and failures
 
-The following commands use the default capability at `capabilities/get_savings_balance.v1.json`. Run them with the server in normal mode and review disabled.
+These commands use the default capability, `capabilities/get_savings_balance.v1.json`. Keep the server in normal mode with review disabled.
 
 ```powershell
-# A valid member ID that does not exist.
+# A correctly formatted member ID that does not exist.
 python -m automation.replay_without_model --member-id 99999 --report-dir evidence
 
 # An intentionally incorrect expected balance.
@@ -140,37 +145,38 @@ python -m automation.replay_without_model --member-id abc --report-dir evidence
 
 # Run the five-case evaluation.
 python -m automation.evaluate_replay
+$LASTEXITCODE
 ```
-
-Replay returns one of three statuses:
 
 | Status | Meaning |
 | --- | --- |
-| `passed` | The workflow completed and its checks passed. |
+| `passed` | Execution and verification succeeded. |
 | `not_found` | The application reported that the member does not exist. |
 | `failed` | Validation, execution, or verification failed. |
 
-A missing member is a business outcome. If the test also supplies an expected balance, however, the missing member fails that assertion. Execution failures return a nonzero process exit code.
+An ordinary missing-member result exits with code `0`. Supplying an expected balance makes a missing-member result fail that assertion. Failed runs exit with a nonzero code.
+
+The five-case evaluation passed. It checks statuses, outputs, exit codes, saved-output redaction, event persistence, and the absence of unexpected handoff events. This evaluation uses the default capability; the latest compiled capability was separately verified with the explicit replay command above.
 
 ### UI fixtures
 
-To test a UI condition, stop the server, change `DEMO_UI_VARIANT`, and restart it. Keep `DEMO_REQUIRE_REVIEW` set to `"0"` for these cases.
+Stop the server, change `DEMO_UI_VARIANT`, and restart it to exercise a fixture. Keep review disabled.
 
-| Variant | Application behavior | Expected replay result |
+| Variant | Application behavior | Expected replay behavior |
 | --- | --- | --- |
-| `normal` | Displays the usual savings link. | Success |
-| `delayed_link` | Inserts the link after 2 seconds. | Wait, recover, and continue |
-| `late_link` | Inserts the link after 15 seconds. | Stop when the bounded target wait expires |
-| `renamed_link` | Changes the label to “Open savings”. | Target not found |
-| `duplicate_link` | Displays two matching savings links. | Ambiguous target |
+| `normal` | Displays the usual savings link. | Complete successfully |
+| `delayed_link` | Inserts the link after 2 seconds. | Wait and continue |
+| `late_link` | Inserts the link after 15 seconds. | Stop when the target wait expires |
+| `renamed_link` | Changes the label to “Open savings”. | Report a missing target |
+| `duplicate_link` | Displays two matching savings links. | Report an ambiguous target |
 
-In the recorded tests, the delayed link recovered after 1.843 seconds of waiting. The late-link case stopped after 5.007 seconds. These timings describe those individual runs.
+The recorded delayed-link run recovered after a 1.843-second wait. The late-link run stopped after a 5.007-second wait. These are observations from individual runs, not performance guarantees.
 
-Failures include structured diagnostics and a reference to a sanitized DOM snapshot when capture succeeds. Failures before browser creation explain why no page snapshot is available.
+Checkpoint failures identify the failed check, execution phase, step where applicable, and safe expected/observed descriptions. A separate test changed the final success heading to a nonexistent heading. Replay completed the eight actions, then correctly failed final checkpoint verification and saved a DOM snapshot.
 
 ## Human review
 
-Enable the review gate by restarting the server with:
+Restart the application with review enabled:
 
 ```powershell
 $env:DEMO_UI_VARIANT = "normal"
@@ -178,10 +184,11 @@ $env:DEMO_REQUIRE_REVIEW = "1"
 python -m uvicorn demo_app.main:app --host 127.0.0.1 --port 8000 --no-access-log
 ```
 
-Start replay in the second terminal:
+The recorded handoff demonstration used this capability:
 
 ```powershell
-python -m automation.replay_without_model --member-id 10002 --expected-balance 987.65 --report-dir evidence --handoff-timeout 180
+python -m automation.replay_without_model --capability capabilities/get_savings_balance.discovery-1d44ea2b.json --member-id 10002 --expected-balance 987.65 --report-dir evidence --handoff-timeout 180
+$LASTEXITCODE
 ```
 
 When the terminal displays `HUMAN CONTROL`:
@@ -190,59 +197,62 @@ When the terminal displays `HUMAN CONTROL`:
 2. Select **Confirm review**.
 3. Return to the terminal and enter `resume`.
 
-Replay checks the captured acknowledgement and submission, then verifies the expected page and member identity before continuing.
+Replay verifies the captured acknowledgement and submission, the expected page, and the member identity before restoring automation ownership.
 
-Enter `cancel` to stop the run. The handoff expires if it is not completed within the configured time. The default is 180 seconds; supported values are 1–600 seconds.
+Enter `cancel` to stop. The handoff expires when its configured time limit is reached. The default is 180 seconds; supported values are 1–600 seconds.
 
-The review is a synthetic acknowledgement, not a financial transaction. This handoff handles the application's known review gate. Other unexpected conditions produce a failure report.
+This is a synthetic acknowledgement, not authorization for a financial transaction. The implementation handles this known review gate. Other unexpected conditions produce a failure report.
 
-## Evidence and verification
+## Evidence
 
-The `evidence/` directory contains the selected discovery, replay, and failure records.
+[evidence/README.md](evidence/README.md) maps the selected records to their demonstrations.
 
 | Demonstration | Evidence file |
 | --- | --- |
-| Genuine Gemini discovery | `evidence/discovery-054181a6079c4655972c901b3dc13ebc.sanitized.json` |
-| Example capability | `evidence/get_savings_balance.example.json` |
-| Replay for another member after UI changes | `evidence/replay-dff94ddfe614433382fb132182d963c1.json` |
-| Human takeover and resume after UI changes | `evidence/replay-e140457458d2465aa0534289f059fd34.json` |
-| Recovery from a delayed target | `evidence/replay-510f6cb6140641ecb849e92bbfefa37d.json` |
+| Latest live discovery, including request attempts | `evidence/discovery-log-333ac195c071424c875e77210b2c731d.json` |
+| Compiled discovery summary | `evidence/discovery-333ac195c071424c875e77210b2c731d.sanitized.json` |
+| Latest example capability | `evidence/get_savings_balance.discovery-333ac195.json` |
+| Model-free replay for another member | `evidence/replay-d778e5df0e134308831059e4657e3939.json` |
+| Human takeover and verified resume | `evidence/replay-126efdce178343809a0246aec252e6cb.json` |
+| Delayed-target recovery | `evidence/replay-510f6cb6140641ecb849e92bbfefa37d.json` |
 | Bounded target failure | `evidence/replay-f064f004d13e4bff84d585b4fda32a47.json` |
-| Replay failure snapshot | `evidence/failure-dom-8539e52a66194d12b54c8f7bcd1911b1.json` |
+| Final checkpoint mismatch | `evidence/replay-ff8295e1eace4962b511186e31dd58b1.json` |
 | Five-case evaluation | `evidence/evaluation-replay.json` |
-| Injected discovery failure | `evidence/discovery-failure-6b0c343683514916b6017459d02e77cd.json` |
-| Discovery failure snapshot | `evidence/failure-dom-1bf413666a3a425eb05dc8ecf4db0186.json` |
+| Injected discovery failure with retained step history | `evidence/discovery-log-2d84be79e55d462cb94ecda21e974f43.json` |
 
-The example capability is an identical copy of `capabilities/get_savings_balance.discovery-054181a6.json`.
+The latest example capability is a byte-for-byte copy of `capabilities/get_savings_balance.discovery-333ac195.json`.
 
-After the UI changes, normal replay, human takeover, and all five evaluation cases passed. The evaluation checks statuses, outputs, exit codes, saved-output redaction, event persistence, and the absence of unexpected handoff events.
+The handoff and checkpoint-mismatch demonstrations used the earlier `discovery-1d44ea2b` capability. The readiness fixtures are retained from earlier runs. These records demonstrate their stated behaviors without implying that every test used the latest artifact.
 
-The discovery failure test injected a planner exception after the browser opened and the page was observed. It confirmed that discovery saves a sanitized snapshot before browser cleanup and reports the failure. That test made no Gemini request; the successful discovery was a separate, genuine model-driven run.
+The injected discovery failure used a mocked planner: one fill action succeeded, then the second planner call raised an exception. It made no Gemini request. The live discovery and simulated provider-retry tests are separate checks.
 
 ## Safety and data handling
 
-The browser policy limits automation to the local application's approved routes, controls, and read fields. Financial writes are outside the supported workflow. During human review, a temporary permission allows one scoped form submission.
+The browser policy restricts automation to the approved origin, routes, controls, and read fields. Financial writes are outside the workflow. During human review, a temporary permission allows one scoped form submission.
 
-Raw discovery records remain in the ignored `runs/` directory. They contain synthetic member paths and values needed by the compiler. Page observations sent to Gemini can also contain synthetic values, so this demo must not be used with real customer data.
+Raw discovery records remain in the ignored `runs/` directory. They contain synthetic paths and values needed by compilation. Observations sent to Gemini can contain synthetic values, so this demonstration must not be used with real customer data.
 
-Published discovery summaries replace member paths with templates and redact output values. Their action descriptions are static summaries, not recorded model explanations. A source SHA-256 links the capability and summary to the original record; it does not independently prove execution.
+Published discovery evidence uses templated member paths and redacted output values. Action-purpose descriptions are static descriptions, not recorded model reasoning. A source SHA-256 links a capability and summary to the original record; it does not independently prove execution.
 
-Failure snapshots preserve approved static labels and page structure while omitting attributes, tokens, scripts, and unknown text. This sanitizer is designed for the demo's main document and does not cover every possible application surface.
+DOM snapshots retain approved static labels and structure while excluding attributes, tokens, scripts, and unknown text. This sanitizer covers the demo's main document, not arbitrary application surfaces.
 
-Saved replay reports redact extracted values. Replay console output shows synthetic results for inspection; discovery console output redacts them. Secrets and raw discovery records are excluded from the public repository.
+Saved replay reports redact extracted outputs. Replay console output displays synthetic results; discovery console output redacts them. Secrets and raw discovery records are excluded from Git.
 
 ## Project structure
 
-| Location | Responsibility |
-| --- | --- |
-| `automation/discovery_demo.py`, `planner.py`, `observer.py` | Model-driven discovery |
-| `automation/contracts.py`, `capability.py`, `compile_capability.py` | Action contracts and capability compilation |
-| `automation/replay.py`, `executor.py`, `business_outcomes.py` | Replay, verification, and outcome handling |
-| `automation/policy.py`, `network_guard.py` | Action and browser-request restrictions |
-| `automation/session_control.py`, `handoff.py` | Ownership transfer and resume |
-| `automation/run_reporting.py`, `failure_evidence.py` | Reports and sanitized snapshots |
-| `demo_app/` | Synthetic application, review sessions, and shared UI |
-| `capabilities/` | Saved reusable capabilities |
-| `evidence/` | Selected demonstration and evaluation records |
+All Python modules below are under `automation/` unless otherwise stated.
 
-See [REPORT.md](REPORT.md) for the architecture, implementation trade-offs, and proposed extensions for legacy applications and multiple institutions.
+| Modules or directory | Responsibility |
+| --- | --- |
+| `discovery_demo.py`, `planner.py`, `observer.py` | Model-driven discovery |
+| `discovery_logging.py`, `model_errors.py` | Discovery diagnostics and provider-error details |
+| `contracts.py`, `capability.py`, `compile_capability.py` | Typed actions and capability compilation |
+| `replay.py`, `executor.py`, `verification.py`, `business_outcomes.py` | Execution, verification, and outcomes |
+| `policy.py`, `network_guard.py` | Action and browser-request restrictions |
+| `session_control.py`, `handoff.py` | Ownership transfer and verified resume |
+| `run_reporting.py`, `failure_evidence.py` | Reports and sanitized snapshots |
+| `demo_app/` | Synthetic application and review UI |
+| `capabilities/` | Reusable artifacts |
+| `evidence/` | Demonstration and evaluation records |
+
+See [REPORT.md](REPORT.md) for design decisions and limitations.

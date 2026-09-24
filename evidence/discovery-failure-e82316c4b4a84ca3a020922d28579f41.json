@@ -1,0 +1,36 @@
+{
+  "status": "failed",
+  "mode": "llm_discovery_demo",
+  "outputs": {},
+  "error": {
+    "code": "invalid_member_id",
+    "type": "DiscoveryRequestError",
+    "message": "The member ID must contain exactly five ASCII digits."
+  },
+  "failure_evidence": {
+    "status": "unavailable",
+    "reason": "page_not_created"
+  },
+  "discovery_run_id": "b843610bd07b4b73b1fef7eeada07732",
+  "steps_executed": 0,
+  "discovery_events": [
+    {
+      "phase": "validation",
+      "event": "stage_started",
+      "recorded_at": "2026-09-23T22:01:02.583471+00:00"
+    },
+    {
+      "phase": "validation",
+      "event": "stage_failed",
+      "recorded_at": "2026-09-23T22:01:02.590792+00:00",
+      "elapsed_seconds": 0.008
+    }
+  ],
+  "failure_context": {
+    "phase": "validation"
+  },
+  "discovery_log_path": "C:\\Users\\diwit\\AI\\interface-ai-automation\\evidence\\discovery-log-b843610bd07b4b73b1fef7eeada07732.json",
+  "report_version": 1,
+  "report_id": "e82316c4b4a84ca3a020922d28579f41",
+  "recorded_at": "2026-09-23T22:01:02.594795+00:00"
+}

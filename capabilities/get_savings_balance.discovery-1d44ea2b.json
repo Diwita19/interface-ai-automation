@@ -1,0 +1,274 @@
+{
+  "schema_version": 1,
+  "capability_id": "get_savings_balance",
+  "capability_version": 1,
+  "source_run_id": "1d44ea2b5c92488ea43d0ad02ef524dc",
+  "source_record_sha256": "672402eee58465c248601a6e55f73dd31bc93aa7f56a5b888fb6f5c177d12f51",
+  "inputs": {
+    "member_id": {
+      "value_type": "string",
+      "pattern": "[0-9]{5}"
+    }
+  },
+  "outputs": {
+    "member_id": {
+      "value_type": "string",
+      "source": {
+        "kind": "table_value",
+        "row_label": "Member ID"
+      },
+      "equals_input": "member_id"
+    },
+    "account_type": {
+      "value_type": "string",
+      "source": {
+        "kind": "table_value",
+        "row_label": "Account type"
+      },
+      "equals_literal": "Savings"
+    },
+    "available_balance": {
+      "value_type": "string",
+      "source": {
+        "kind": "table_value",
+        "row_label": "Available balance"
+      },
+      "pattern": "-?[0-9]+\\.[0-9]{2}"
+    },
+    "currency": {
+      "value_type": "string",
+      "source": {
+        "kind": "table_value",
+        "row_label": "Currency"
+      },
+      "equals_literal": "USD"
+    }
+  },
+  "steps": [
+    {
+      "before": {
+        "path_template": "/",
+        "heading": "Member search",
+        "input_checks": {}
+      },
+      "action": {
+        "kind": "fill",
+        "target": {
+          "kind": "label",
+          "name": "Member ID"
+        },
+        "input_name": "member_id"
+      },
+      "after": {
+        "path_template": "/",
+        "heading": "Member search",
+        "input_checks": {}
+      }
+    },
+    {
+      "before": {
+        "path_template": "/",
+        "heading": "Member search",
+        "input_checks": {}
+      },
+      "action": {
+        "kind": "click",
+        "target": {
+          "kind": "role",
+          "role": "button",
+          "name": "Search"
+        }
+      },
+      "after": {
+        "path_template": "/search",
+        "heading": "Search results",
+        "input_checks": {}
+      }
+    },
+    {
+      "before": {
+        "path_template": "/search",
+        "heading": "Search results",
+        "input_checks": {}
+      },
+      "action": {
+        "kind": "click",
+        "target": {
+          "kind": "role",
+          "role": "link",
+          "name": "Open member"
+        }
+      },
+      "after": {
+        "path_template": "/members/{member_id}",
+        "heading": "Member details",
+        "input_checks": {
+          "member_id": {
+            "kind": "table_value",
+            "row_label": "Member ID"
+          }
+        }
+      }
+    },
+    {
+      "before": {
+        "path_template": "/members/{member_id}",
+        "heading": "Member details",
+        "input_checks": {
+          "member_id": {
+            "kind": "table_value",
+            "row_label": "Member ID"
+          }
+        }
+      },
+      "action": {
+        "kind": "click",
+        "target": {
+          "kind": "role",
+          "role": "link",
+          "name": "View savings"
+        }
+      },
+      "after": {
+        "path_template": "/members/{member_id}/accounts/savings",
+        "heading": "Savings account",
+        "input_checks": {
+          "member_id": {
+            "kind": "table_value",
+            "row_label": "Member ID"
+          }
+        }
+      }
+    },
+    {
+      "before": {
+        "path_template": "/members/{member_id}/accounts/savings",
+        "heading": "Savings account",
+        "input_checks": {
+          "member_id": {
+            "kind": "table_value",
+            "row_label": "Member ID"
+          }
+        }
+      },
+      "action": {
+        "kind": "read",
+        "target": {
+          "kind": "table_value",
+          "row_label": "Member ID"
+        },
+        "output_name": "member_id"
+      },
+      "after": {
+        "path_template": "/members/{member_id}/accounts/savings",
+        "heading": "Savings account",
+        "input_checks": {
+          "member_id": {
+            "kind": "table_value",
+            "row_label": "Member ID"
+          }
+        }
+      }
+    },
+    {
+      "before": {
+        "path_template": "/members/{member_id}/accounts/savings",
+        "heading": "Savings account",
+        "input_checks": {
+          "member_id": {
+            "kind": "table_value",
+            "row_label": "Member ID"
+          }
+        }
+      },
+      "action": {
+        "kind": "read",
+        "target": {
+          "kind": "table_value",
+          "row_label": "Account type"
+        },
+        "output_name": "account_type"
+      },
+      "after": {
+        "path_template": "/members/{member_id}/accounts/savings",
+        "heading": "Savings account",
+        "input_checks": {
+          "member_id": {
+            "kind": "table_value",
+            "row_label": "Member ID"
+          }
+        }
+      }
+    },
+    {
+      "before": {
+        "path_template": "/members/{member_id}/accounts/savings",
+        "heading": "Savings account",
+        "input_checks": {
+          "member_id": {
+            "kind": "table_value",
+            "row_label": "Member ID"
+          }
+        }
+      },
+      "action": {
+        "kind": "read",
+        "target": {
+          "kind": "table_value",
+          "row_label": "Available balance"
+        },
+        "output_name": "available_balance"
+      },
+      "after": {
+        "path_template": "/members/{member_id}/accounts/savings",
+        "heading": "Savings account",
+        "input_checks": {
+          "member_id": {
+            "kind": "table_value",
+            "row_label": "Member ID"
+          }
+        }
+      }
+    },
+    {
+      "before": {
+        "path_template": "/members/{member_id}/accounts/savings",
+        "heading": "Savings account",
+        "input_checks": {
+          "member_id": {
+            "kind": "table_value",
+            "row_label": "Member ID"
+          }
+        }
+      },
+      "action": {
+        "kind": "read",
+        "target": {
+          "kind": "table_value",
+          "row_label": "Currency"
+        },
+        "output_name": "currency"
+      },
+      "after": {
+        "path_template": "/members/{member_id}/accounts/savings",
+        "heading": "Savings account",
+        "input_checks": {
+          "member_id": {
+            "kind": "table_value",
+            "row_label": "Member ID"
+          }
+        }
+      }
+    }
+  ],
+  "success": {
+    "path_template": "/members/{member_id}/accounts/savings",
+    "heading": "Savings account",
+    "input_checks": {
+      "member_id": {
+        "kind": "table_value",
+        "row_label": "Member ID"
+      }
+    }
+  }
+}

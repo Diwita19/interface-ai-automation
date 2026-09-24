@@ -1,0 +1,204 @@
+{
+  "evidence_version": 1,
+  "record_type": "sanitized_discovery_log",
+  "run_id": "7fc3761a513546b5844e1bafc7e68dae",
+  "status": "failed",
+  "model": "gemini-2.5-flash",
+  "started_at": "2026-09-23T22:04:14.707701+00:00",
+  "recorded_at": "2026-09-23T22:04:33.873110+00:00",
+  "elapsed_seconds": 19.163,
+  "steps_executed": 1,
+  "failure_context": {
+    "phase": "planning",
+    "step": 2
+  },
+  "events": [
+    {
+      "phase": "validation",
+      "event": "stage_started",
+      "recorded_at": "2026-09-23T22:04:14.707701+00:00"
+    },
+    {
+      "phase": "validation",
+      "event": "stage_completed",
+      "recorded_at": "2026-09-23T22:04:14.707701+00:00",
+      "elapsed_seconds": 0.001
+    },
+    {
+      "phase": "configuration",
+      "event": "stage_started",
+      "recorded_at": "2026-09-23T22:04:14.707701+00:00"
+    },
+    {
+      "phase": "configuration",
+      "event": "stage_completed",
+      "recorded_at": "2026-09-23T22:04:14.707701+00:00",
+      "elapsed_seconds": 0.0
+    },
+    {
+      "phase": "model_client_setup",
+      "event": "stage_started",
+      "recorded_at": "2026-09-23T22:04:14.707701+00:00"
+    },
+    {
+      "phase": "model_client_setup",
+      "event": "stage_completed",
+      "recorded_at": "2026-09-23T22:04:14.773944+00:00",
+      "elapsed_seconds": 0.062
+    },
+    {
+      "phase": "browser_launch",
+      "event": "stage_started",
+      "recorded_at": "2026-09-23T22:04:15.031945+00:00"
+    },
+    {
+      "phase": "browser_launch",
+      "event": "stage_completed",
+      "recorded_at": "2026-09-23T22:04:15.257985+00:00",
+      "elapsed_seconds": 0.22
+    },
+    {
+      "phase": "browser_setup",
+      "event": "stage_started",
+      "recorded_at": "2026-09-23T22:04:15.257985+00:00"
+    },
+    {
+      "phase": "browser_setup",
+      "event": "stage_completed",
+      "recorded_at": "2026-09-23T22:04:15.509608+00:00",
+      "elapsed_seconds": 0.25
+    },
+    {
+      "phase": "navigation",
+      "event": "stage_started",
+      "recorded_at": "2026-09-23T22:04:15.509608+00:00"
+    },
+    {
+      "phase": "navigation",
+      "event": "stage_completed",
+      "recorded_at": "2026-09-23T22:04:15.955408+00:00",
+      "elapsed_seconds": 0.447
+    },
+    {
+      "phase": "observation",
+      "step": 1,
+      "event": "stage_started",
+      "recorded_at": "2026-09-23T22:04:15.955408+00:00"
+    },
+    {
+      "event": "page_observed",
+      "step": 1,
+      "page_path_template": "/",
+      "recorded_at": "2026-09-23T22:04:15.973047+00:00"
+    },
+    {
+      "phase": "observation",
+      "step": 1,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-23T22:04:15.973047+00:00",
+      "elapsed_seconds": 0.023
+    },
+    {
+      "phase": "planning",
+      "step": 1,
+      "event": "stage_started",
+      "recorded_at": "2026-09-23T22:04:15.973047+00:00"
+    },
+    {
+      "phase": "planning",
+      "step": 1,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-23T22:04:17.310890+00:00",
+      "elapsed_seconds": 1.337
+    },
+    {
+      "event": "action_proposed",
+      "step": 1,
+      "action": {
+        "kind": "fill",
+        "target": {
+          "kind": "label",
+          "name": "Member ID"
+        },
+        "input_name": "member_id",
+        "purpose": "Enter the runtime member ID in the search field."
+      },
+      "purpose_source": "static action-purpose description; not model reasoning",
+      "recorded_at": "2026-09-23T22:04:17.310890+00:00"
+    },
+    {
+      "phase": "execution",
+      "step": 1,
+      "event": "stage_started",
+      "recorded_at": "2026-09-23T22:04:17.310890+00:00"
+    },
+    {
+      "phase": "execution",
+      "step": 1,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-23T22:04:17.587266+00:00",
+      "elapsed_seconds": 0.272
+    },
+    {
+      "phase": "observation",
+      "step": 2,
+      "event": "stage_started",
+      "recorded_at": "2026-09-23T22:04:32.590093+00:00"
+    },
+    {
+      "event": "page_observed",
+      "step": 2,
+      "page_path_template": "/",
+      "recorded_at": "2026-09-23T22:04:32.614163+00:00"
+    },
+    {
+      "phase": "observation",
+      "step": 2,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-23T22:04:32.614163+00:00",
+      "elapsed_seconds": 0.024
+    },
+    {
+      "phase": "planning",
+      "step": 2,
+      "event": "stage_started",
+      "recorded_at": "2026-09-23T22:04:32.614163+00:00"
+    },
+    {
+      "phase": "planning",
+      "step": 2,
+      "event": "stage_failed",
+      "recorded_at": "2026-09-23T22:04:33.528567+00:00",
+      "elapsed_seconds": 0.915
+    }
+  ],
+  "outputs": {},
+  "redaction_policy": "discovery_fixed_labels_and_templates_v1",
+  "compilation_source": false,
+  "limitations": [
+    "Planning events record calls to the planner, not provider attestations.",
+    "Action purposes are static descriptions, not recorded model reasoning."
+  ],
+  "error": {
+    "code": "unexpected_error",
+    "type": "ServerError",
+    "message": "An unexpected execution error occurred.",
+    "locations": [
+      {
+        "file": "discovery_demo.py",
+        "function": "_run_discovery",
+        "line": 384
+      },
+      {
+        "file": "planner.py",
+        "function": "propose_action",
+        "line": 117
+      }
+    ]
+  },
+  "failure_evidence": {
+    "status": "saved",
+    "kind": "sanitized_dom",
+    "file": "failure-dom-5155ec71fc1b4ee8882522e2864d9f62.json"
+  }
+}

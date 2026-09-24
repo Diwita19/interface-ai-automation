@@ -1,0 +1,195 @@
+{
+  "status": "passed",
+  "mode": "deterministic_replay",
+  "capability_id": "get_savings_balance",
+  "capability_version": 1,
+  "steps_executed": 8,
+  "outputs": {
+    "member_id": "[REDACTED]",
+    "account_type": "[REDACTED]",
+    "available_balance": "[REDACTED]",
+    "currency": "[REDACTED]"
+  },
+  "elapsed_seconds": 2.92,
+  "events": [
+    {
+      "operation": "validation",
+      "reason": "Validate artifact inputs and policy before navigation.",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T22:19:35.227452+00:00"
+    },
+    {
+      "operation": "validation",
+      "reason": "Validate artifact inputs and policy before navigation.",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T22:19:35.229463+00:00",
+      "elapsed_seconds": "0.001"
+    },
+    {
+      "operation": "navigation",
+      "reason": "Open the capability's initial page.",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T22:19:35.229463+00:00"
+    },
+    {
+      "operation": "navigation",
+      "reason": "Open the capability's initial page.",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T22:19:35.609014+00:00",
+      "elapsed_seconds": "0.380"
+    },
+    {
+      "operation": "step",
+      "reason": "Fill the permitted field using a validated runtime input.",
+      "step": "1",
+      "action": "fill",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T22:19:35.609014+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Fill the permitted field using a validated runtime input.",
+      "step": "1",
+      "action": "fill",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T22:19:35.939591+00:00",
+      "elapsed_seconds": "0.332"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "2",
+      "action": "click",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T22:19:35.939591+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "2",
+      "action": "click",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T22:19:36.305852+00:00",
+      "elapsed_seconds": "0.368"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "3",
+      "action": "click",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T22:19:36.305852+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "3",
+      "action": "click",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T22:19:36.680116+00:00",
+      "elapsed_seconds": "0.377"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "4",
+      "action": "click",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T22:19:36.680116+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Activate the saved target and verify the resulting state.",
+      "step": "4",
+      "action": "click",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T22:19:37.065580+00:00",
+      "elapsed_seconds": "0.379"
+    },
+    {
+      "operation": "step",
+      "reason": "Read the permitted field into the declared output.",
+      "step": "5",
+      "action": "read",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T22:19:37.065580+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Read the permitted field into the declared output.",
+      "step": "5",
+      "action": "read",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T22:19:37.112551+00:00",
+      "elapsed_seconds": "0.051"
+    },
+    {
+      "operation": "step",
+      "reason": "Read the permitted field into the declared output.",
+      "step": "6",
+      "action": "read",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T22:19:37.112551+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Read the permitted field into the declared output.",
+      "step": "6",
+      "action": "read",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T22:19:37.165476+00:00",
+      "elapsed_seconds": "0.049"
+    },
+    {
+      "operation": "step",
+      "reason": "Read the permitted field into the declared output.",
+      "step": "7",
+      "action": "read",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T22:19:37.165476+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Read the permitted field into the declared output.",
+      "step": "7",
+      "action": "read",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T22:19:37.212096+00:00",
+      "elapsed_seconds": "0.048"
+    },
+    {
+      "operation": "step",
+      "reason": "Read the permitted field into the declared output.",
+      "step": "8",
+      "action": "read",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T22:19:37.212096+00:00"
+    },
+    {
+      "operation": "step",
+      "reason": "Read the permitted field into the declared output.",
+      "step": "8",
+      "action": "read",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T22:19:37.262314+00:00",
+      "elapsed_seconds": "0.054"
+    },
+    {
+      "operation": "final_verification",
+      "reason": "Verify the final checkpoint and output rules.",
+      "event": "operation_started",
+      "recorded_at": "2026-09-23T22:19:37.262314+00:00"
+    },
+    {
+      "operation": "final_verification",
+      "reason": "Verify the final checkpoint and output rules.",
+      "event": "operation_completed",
+      "recorded_at": "2026-09-23T22:19:37.337060+00:00",
+      "elapsed_seconds": "0.073"
+    }
+  ],
+  "report_version": 1,
+  "run_id": "8504435897bd4981bbb1d9a6e8c88102",
+  "recorded_at": "2026-09-23T22:19:37.670374+00:00",
+  "output_values_redacted": true
+}

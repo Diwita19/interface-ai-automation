@@ -1,0 +1,694 @@
+{
+  "evidence_version": 1,
+  "record_type": "sanitized_discovery_log",
+  "run_id": "333ac195c071424c875e77210b2c731d",
+  "status": "passed",
+  "model": "gemini-2.5-flash",
+  "started_at": "2026-09-24T03:52:01.949503+00:00",
+  "recorded_at": "2026-09-24T03:54:00.957702+00:00",
+  "elapsed_seconds": 118.998,
+  "steps_executed": 8,
+  "failure_context": null,
+  "events": [
+    {
+      "phase": "validation",
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:52:01.949503+00:00"
+    },
+    {
+      "phase": "validation",
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:52:01.949503+00:00",
+      "elapsed_seconds": 0.001
+    },
+    {
+      "phase": "configuration",
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:52:01.949503+00:00"
+    },
+    {
+      "phase": "configuration",
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:52:01.949503+00:00",
+      "elapsed_seconds": 0.0
+    },
+    {
+      "phase": "model_client_setup",
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:52:01.949503+00:00"
+    },
+    {
+      "phase": "model_client_setup",
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:52:02.026971+00:00",
+      "elapsed_seconds": 0.067
+    },
+    {
+      "phase": "browser_launch",
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:52:02.309366+00:00"
+    },
+    {
+      "phase": "browser_launch",
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:52:02.543636+00:00",
+      "elapsed_seconds": 0.231
+    },
+    {
+      "phase": "browser_setup",
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:52:02.543636+00:00"
+    },
+    {
+      "phase": "browser_setup",
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:52:02.869196+00:00",
+      "elapsed_seconds": 0.327
+    },
+    {
+      "phase": "navigation",
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:52:02.869196+00:00"
+    },
+    {
+      "phase": "navigation",
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:52:03.300176+00:00",
+      "elapsed_seconds": 0.43
+    },
+    {
+      "phase": "observation",
+      "step": 1,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:52:03.300176+00:00"
+    },
+    {
+      "event": "page_observed",
+      "step": 1,
+      "page_path_template": "/",
+      "recorded_at": "2026-09-24T03:52:03.322674+00:00"
+    },
+    {
+      "phase": "observation",
+      "step": 1,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:52:03.322674+00:00",
+      "elapsed_seconds": 0.022
+    },
+    {
+      "phase": "planning",
+      "step": 1,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:52:03.322674+00:00"
+    },
+    {
+      "event": "model_request_started",
+      "attempt": 1,
+      "recorded_at": "2026-09-24T03:52:03.325666+00:00",
+      "step": 1
+    },
+    {
+      "event": "model_request_completed",
+      "attempt": 1,
+      "recorded_at": "2026-09-24T03:52:04.480165+00:00",
+      "step": 1
+    },
+    {
+      "phase": "planning",
+      "step": 1,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:52:04.480165+00:00",
+      "elapsed_seconds": 1.158
+    },
+    {
+      "event": "action_proposed",
+      "step": 1,
+      "action": {
+        "kind": "fill",
+        "target": {
+          "kind": "label",
+          "name": "Member ID"
+        },
+        "input_name": "member_id",
+        "purpose": "Enter the runtime member ID in the search field."
+      },
+      "purpose_source": "static action-purpose description; not model reasoning",
+      "recorded_at": "2026-09-24T03:52:04.480165+00:00"
+    },
+    {
+      "phase": "execution",
+      "step": 1,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:52:04.480165+00:00"
+    },
+    {
+      "phase": "execution",
+      "step": 1,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:52:04.762128+00:00",
+      "elapsed_seconds": 0.282
+    },
+    {
+      "phase": "observation",
+      "step": 2,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:52:19.764418+00:00"
+    },
+    {
+      "event": "page_observed",
+      "step": 2,
+      "page_path_template": "/",
+      "recorded_at": "2026-09-24T03:52:19.790180+00:00"
+    },
+    {
+      "phase": "observation",
+      "step": 2,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:52:19.790180+00:00",
+      "elapsed_seconds": 0.026
+    },
+    {
+      "phase": "planning",
+      "step": 2,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:52:19.790180+00:00"
+    },
+    {
+      "event": "model_request_started",
+      "attempt": 1,
+      "recorded_at": "2026-09-24T03:52:19.790180+00:00",
+      "step": 2
+    },
+    {
+      "event": "model_request_completed",
+      "attempt": 1,
+      "recorded_at": "2026-09-24T03:52:20.856738+00:00",
+      "step": 2
+    },
+    {
+      "phase": "planning",
+      "step": 2,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:52:20.856738+00:00",
+      "elapsed_seconds": 1.082
+    },
+    {
+      "event": "action_proposed",
+      "step": 2,
+      "action": {
+        "kind": "click",
+        "target": {
+          "kind": "role",
+          "role": "button",
+          "name": "Search"
+        },
+        "purpose": "Submit the member search."
+      },
+      "purpose_source": "static action-purpose description; not model reasoning",
+      "recorded_at": "2026-09-24T03:52:20.856738+00:00"
+    },
+    {
+      "phase": "execution",
+      "step": 2,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:52:20.872859+00:00"
+    },
+    {
+      "phase": "execution",
+      "step": 2,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:52:21.214568+00:00",
+      "elapsed_seconds": 0.343
+    },
+    {
+      "phase": "observation",
+      "step": 3,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:52:36.216637+00:00"
+    },
+    {
+      "event": "page_observed",
+      "step": 3,
+      "page_path_template": "/search",
+      "recorded_at": "2026-09-24T03:52:36.240725+00:00"
+    },
+    {
+      "phase": "observation",
+      "step": 3,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:52:36.240725+00:00",
+      "elapsed_seconds": 0.031
+    },
+    {
+      "phase": "planning",
+      "step": 3,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:52:36.240725+00:00"
+    },
+    {
+      "event": "model_request_started",
+      "attempt": 1,
+      "recorded_at": "2026-09-24T03:52:36.240725+00:00",
+      "step": 3
+    },
+    {
+      "event": "model_request_completed",
+      "attempt": 1,
+      "recorded_at": "2026-09-24T03:52:37.681044+00:00",
+      "step": 3
+    },
+    {
+      "phase": "planning",
+      "step": 3,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:52:37.681044+00:00",
+      "elapsed_seconds": 1.435
+    },
+    {
+      "event": "action_proposed",
+      "step": 3,
+      "action": {
+        "kind": "click",
+        "target": {
+          "kind": "role",
+          "role": "link",
+          "name": "Open member"
+        },
+        "purpose": "Open the member returned by the search."
+      },
+      "purpose_source": "static action-purpose description; not model reasoning",
+      "recorded_at": "2026-09-24T03:52:37.681044+00:00"
+    },
+    {
+      "phase": "execution",
+      "step": 3,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:52:37.681044+00:00"
+    },
+    {
+      "phase": "execution",
+      "step": 3,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:52:38.027573+00:00",
+      "elapsed_seconds": 0.346
+    },
+    {
+      "phase": "observation",
+      "step": 4,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:52:53.029166+00:00"
+    },
+    {
+      "event": "page_observed",
+      "step": 4,
+      "page_path_template": "/members/{member_id}",
+      "recorded_at": "2026-09-24T03:52:53.061303+00:00"
+    },
+    {
+      "phase": "observation",
+      "step": 4,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:52:53.061303+00:00",
+      "elapsed_seconds": 0.032
+    },
+    {
+      "phase": "planning",
+      "step": 4,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:52:53.061303+00:00"
+    },
+    {
+      "event": "model_request_started",
+      "attempt": 1,
+      "recorded_at": "2026-09-24T03:52:53.062456+00:00",
+      "step": 4
+    },
+    {
+      "event": "model_request_completed",
+      "attempt": 1,
+      "recorded_at": "2026-09-24T03:52:54.464804+00:00",
+      "step": 4
+    },
+    {
+      "phase": "planning",
+      "step": 4,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:52:54.464804+00:00",
+      "elapsed_seconds": 1.407
+    },
+    {
+      "event": "action_proposed",
+      "step": 4,
+      "action": {
+        "kind": "click",
+        "target": {
+          "kind": "role",
+          "role": "link",
+          "name": "View savings"
+        },
+        "purpose": "Open the member's savings account."
+      },
+      "purpose_source": "static action-purpose description; not model reasoning",
+      "recorded_at": "2026-09-24T03:52:54.464804+00:00"
+    },
+    {
+      "phase": "execution",
+      "step": 4,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:52:54.464804+00:00"
+    },
+    {
+      "phase": "execution",
+      "step": 4,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:52:54.804996+00:00",
+      "elapsed_seconds": 0.337
+    },
+    {
+      "phase": "observation",
+      "step": 5,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:53:09.806694+00:00"
+    },
+    {
+      "event": "page_observed",
+      "step": 5,
+      "page_path_template": "/members/{member_id}/accounts/savings",
+      "recorded_at": "2026-09-24T03:53:09.848065+00:00"
+    },
+    {
+      "phase": "observation",
+      "step": 5,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:53:09.848065+00:00",
+      "elapsed_seconds": 0.047
+    },
+    {
+      "phase": "planning",
+      "step": 5,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:53:09.848065+00:00"
+    },
+    {
+      "event": "model_request_started",
+      "attempt": 1,
+      "recorded_at": "2026-09-24T03:53:09.848065+00:00",
+      "step": 5
+    },
+    {
+      "event": "model_request_completed",
+      "attempt": 1,
+      "recorded_at": "2026-09-24T03:53:11.308903+00:00",
+      "step": 5
+    },
+    {
+      "phase": "planning",
+      "step": 5,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:53:11.308903+00:00",
+      "elapsed_seconds": 1.463
+    },
+    {
+      "event": "action_proposed",
+      "step": 5,
+      "action": {
+        "kind": "read",
+        "target": {
+          "kind": "table_value",
+          "row_label": "Member ID"
+        },
+        "output_name": "member_id",
+        "purpose": "Read a declared account field from the visible table."
+      },
+      "purpose_source": "static action-purpose description; not model reasoning",
+      "recorded_at": "2026-09-24T03:53:11.308903+00:00"
+    },
+    {
+      "phase": "execution",
+      "step": 5,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:53:11.308903+00:00"
+    },
+    {
+      "phase": "execution",
+      "step": 5,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:53:11.356469+00:00",
+      "elapsed_seconds": 0.04
+    },
+    {
+      "phase": "observation",
+      "step": 6,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:53:26.358169+00:00"
+    },
+    {
+      "event": "page_observed",
+      "step": 6,
+      "page_path_template": "/members/{member_id}/accounts/savings",
+      "recorded_at": "2026-09-24T03:53:26.372284+00:00"
+    },
+    {
+      "phase": "observation",
+      "step": 6,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:53:26.372284+00:00",
+      "elapsed_seconds": 0.021
+    },
+    {
+      "phase": "planning",
+      "step": 6,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:53:26.372284+00:00"
+    },
+    {
+      "event": "model_request_started",
+      "attempt": 1,
+      "recorded_at": "2026-09-24T03:53:26.372284+00:00",
+      "step": 6
+    },
+    {
+      "event": "model_request_completed",
+      "attempt": 1,
+      "recorded_at": "2026-09-24T03:53:27.739394+00:00",
+      "step": 6
+    },
+    {
+      "phase": "planning",
+      "step": 6,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:53:27.739394+00:00",
+      "elapsed_seconds": 1.365
+    },
+    {
+      "event": "action_proposed",
+      "step": 6,
+      "action": {
+        "kind": "read",
+        "target": {
+          "kind": "table_value",
+          "row_label": "Account type"
+        },
+        "output_name": "account_type",
+        "purpose": "Read a declared account field from the visible table."
+      },
+      "purpose_source": "static action-purpose description; not model reasoning",
+      "recorded_at": "2026-09-24T03:53:27.739394+00:00"
+    },
+    {
+      "phase": "execution",
+      "step": 6,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:53:27.739394+00:00"
+    },
+    {
+      "phase": "execution",
+      "step": 6,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:53:27.774470+00:00",
+      "elapsed_seconds": 0.03
+    },
+    {
+      "phase": "observation",
+      "step": 7,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:53:42.775789+00:00"
+    },
+    {
+      "event": "page_observed",
+      "step": 7,
+      "page_path_template": "/members/{member_id}/accounts/savings",
+      "recorded_at": "2026-09-24T03:53:42.777910+00:00"
+    },
+    {
+      "phase": "observation",
+      "step": 7,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:53:42.777910+00:00",
+      "elapsed_seconds": 0.011
+    },
+    {
+      "phase": "planning",
+      "step": 7,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:53:42.777910+00:00"
+    },
+    {
+      "event": "model_request_started",
+      "attempt": 1,
+      "recorded_at": "2026-09-24T03:53:42.777910+00:00",
+      "step": 7
+    },
+    {
+      "event": "model_request_completed",
+      "attempt": 1,
+      "recorded_at": "2026-09-24T03:53:44.020325+00:00",
+      "step": 7
+    },
+    {
+      "phase": "planning",
+      "step": 7,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:53:44.020325+00:00",
+      "elapsed_seconds": 1.235
+    },
+    {
+      "event": "action_proposed",
+      "step": 7,
+      "action": {
+        "kind": "read",
+        "target": {
+          "kind": "table_value",
+          "row_label": "Available balance"
+        },
+        "output_name": "available_balance",
+        "purpose": "Read a declared account field from the visible table."
+      },
+      "purpose_source": "static action-purpose description; not model reasoning",
+      "recorded_at": "2026-09-24T03:53:44.020325+00:00"
+    },
+    {
+      "phase": "execution",
+      "step": 7,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:53:44.020325+00:00"
+    },
+    {
+      "phase": "execution",
+      "step": 7,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:53:44.038576+00:00",
+      "elapsed_seconds": 0.023
+    },
+    {
+      "phase": "observation",
+      "step": 8,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:53:59.046255+00:00"
+    },
+    {
+      "event": "page_observed",
+      "step": 8,
+      "page_path_template": "/members/{member_id}/accounts/savings",
+      "recorded_at": "2026-09-24T03:53:59.058458+00:00"
+    },
+    {
+      "phase": "observation",
+      "step": 8,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:53:59.058458+00:00",
+      "elapsed_seconds": 0.021
+    },
+    {
+      "phase": "planning",
+      "step": 8,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:53:59.058458+00:00"
+    },
+    {
+      "event": "model_request_started",
+      "attempt": 1,
+      "recorded_at": "2026-09-24T03:53:59.069077+00:00",
+      "step": 8
+    },
+    {
+      "event": "model_request_completed",
+      "attempt": 1,
+      "recorded_at": "2026-09-24T03:54:00.528231+00:00",
+      "step": 8
+    },
+    {
+      "phase": "planning",
+      "step": 8,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:54:00.528231+00:00",
+      "elapsed_seconds": 1.468
+    },
+    {
+      "event": "action_proposed",
+      "step": 8,
+      "action": {
+        "kind": "read",
+        "target": {
+          "kind": "table_value",
+          "row_label": "Currency"
+        },
+        "output_name": "currency",
+        "purpose": "Read a declared account field from the visible table."
+      },
+      "purpose_source": "static action-purpose description; not model reasoning",
+      "recorded_at": "2026-09-24T03:54:00.528231+00:00"
+    },
+    {
+      "phase": "execution",
+      "step": 8,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:54:00.528231+00:00"
+    },
+    {
+      "phase": "execution",
+      "step": 8,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:54:00.563101+00:00",
+      "elapsed_seconds": 0.028
+    },
+    {
+      "phase": "verification",
+      "step": 8,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:54:00.563101+00:00"
+    },
+    {
+      "phase": "verification",
+      "step": 8,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:54:00.624588+00:00",
+      "elapsed_seconds": 0.063
+    },
+    {
+      "phase": "record_save",
+      "step": 8,
+      "event": "stage_started",
+      "recorded_at": "2026-09-24T03:54:00.624588+00:00"
+    },
+    {
+      "phase": "record_save",
+      "step": 8,
+      "event": "stage_completed",
+      "recorded_at": "2026-09-24T03:54:00.624588+00:00",
+      "elapsed_seconds": 0.001
+    }
+  ],
+  "outputs": {
+    "member_id": "[REDACTED]",
+    "account_type": "[REDACTED]",
+    "available_balance": "[REDACTED]",
+    "currency": "[REDACTED]"
+  },
+  "redaction_policy": "discovery_fixed_labels_and_templates_v1",
+  "compilation_source": false,
+  "limitations": [
+    "Planning events record calls to the planner, not provider attestations.",
+    "Action purposes are static descriptions, not recorded model reasoning."
+  ]
+}

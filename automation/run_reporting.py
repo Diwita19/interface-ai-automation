@@ -3,6 +3,7 @@ import traceback
 from datetime import datetime, timezone
 from pathlib import Path
 from uuid import uuid4
+from automation.model_errors import ModelRequestError
 
 from playwright.sync_api import (
     Error as PlaywrightError,
@@ -10,17 +11,23 @@ from playwright.sync_api import (
 )
 from pydantic import ValidationError
 
-from automation.policy import PolicyViolation
-from automation.handoff import HandoffCancelled
-from automation.session_control import HandoffExpired, OwnershipError
 from automation.executor import TargetResolutionError
+from automation.handoff import HandoffCancelled
+from automation.policy import PolicyViolation
+from automation.session_control import HandoffExpired, OwnershipError
+from automation.verification import VerificationError
+
 
 def failure_result(error: Exception) -> dict[str, object]:
-    """Convert an exception into a structured, value-free failure report."""
+    """Convert an exception into a structured, value-free report."""
 
     if isinstance(error, TargetResolutionError):
         code = error.code
         message = error.safe_message
+
+    elif isinstance(error, ModelRequestError):
+        code = "model_provider_error"
+        message = "The model API request failed. See provider diagnostics."
 
     elif isinstance(error, HandoffCancelled):
         code = "handoff_cancelled"
@@ -32,7 +39,9 @@ def failure_result(error: Exception) -> dict[str, object]:
 
     elif isinstance(error, OwnershipError):
         code = "ownership_violation"
-        message = "An operation was attempted without session ownership."
+        message = (
+            "An operation was attempted without session ownership."
+        )
 
     elif isinstance(error, ValidationError):
         code = "invalid_artifact"
@@ -51,8 +60,11 @@ def failure_result(error: Exception) -> dict[str, object]:
         message = "A browser operation failed."
 
     elif isinstance(error, AssertionError):
+        # VerificationError inherits AssertionError, preserving this code.
         code = "verification_failed"
-        message = "A checkpoint, output rule, or test assertion failed."
+        message = (
+            "A checkpoint, output rule, or test assertion failed."
+        )
 
     elif isinstance(error, ValueError):
         code = "invalid_input_or_configuration"
@@ -60,7 +72,9 @@ def failure_result(error: Exception) -> dict[str, object]:
 
     elif isinstance(error, OSError):
         code = "io_error"
-        message = "A required file or operating-system operation failed."
+        message = (
+            "A required file or operating-system operation failed."
+        )
 
     else:
         code = "unexpected_error"
@@ -89,6 +103,12 @@ def failure_result(error: Exception) -> dict[str, object]:
 
     if isinstance(error, TargetResolutionError):
         error_details["target_resolution"] = dict(error.details)
+
+    if isinstance(error, VerificationError):
+        error_details["verification"] = dict(error.details)
+
+    if isinstance(error, ModelRequestError):
+        error_details["provider"] = dict(error.details)
 
     return {
         "status": "failed",
@@ -128,7 +148,10 @@ def save_run_report(
 
     report_path = directory / f"replay-{run_id}.json"
 
-    with report_path.open("x", encoding="utf-8") as report_file:
+    with report_path.open(
+        "x",
+        encoding="utf-8",
+    ) as report_file:
         json.dump(
             report,
             report_file,

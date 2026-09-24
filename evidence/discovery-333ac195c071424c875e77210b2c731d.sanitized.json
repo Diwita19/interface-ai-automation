@@ -1,0 +1,158 @@
+{
+  "evidence_version": 2,
+  "record_type": "sanitized_discovery_evidence",
+  "source_run_id": "333ac195c071424c875e77210b2c731d",
+  "source_record_sha256": "a917c4809e0209613138f6d109f09992b1cf3a0fbf029dde9953d09408ad46c2",
+  "source_record_status": "passed",
+  "model": "gemini-2.5-flash",
+  "capability_id": "get_savings_balance",
+  "capability_version": 1,
+  "goal": "Retrieve the requested member's savings account balance.",
+  "input_names": [
+    "member_id"
+  ],
+  "steps_executed": 8,
+  "history": [
+    {
+      "step": 1,
+      "page_path_template_before": "/",
+      "action": {
+        "kind": "fill",
+        "target": {
+          "kind": "label",
+          "name": "Member ID"
+        },
+        "input_name": "member_id",
+        "purpose": "Enter the runtime member ID in the search field."
+      },
+      "decision_context": "Supply a runtime input through the observed field.",
+      "decision_context_source": "static action description; not model reasoning",
+      "execution_status": "completed"
+    },
+    {
+      "step": 2,
+      "page_path_template_before": "/",
+      "action": {
+        "kind": "click",
+        "target": {
+          "kind": "role",
+          "role": "button",
+          "name": "Search"
+        },
+        "purpose": "Submit the member search."
+      },
+      "decision_context": "Navigate using an observed control.",
+      "decision_context_source": "static action description; not model reasoning",
+      "execution_status": "completed"
+    },
+    {
+      "step": 3,
+      "page_path_template_before": "/search",
+      "action": {
+        "kind": "click",
+        "target": {
+          "kind": "role",
+          "role": "link",
+          "name": "Open member"
+        },
+        "purpose": "Open the member returned by the search."
+      },
+      "decision_context": "Navigate using an observed control.",
+      "decision_context_source": "static action description; not model reasoning",
+      "execution_status": "completed"
+    },
+    {
+      "step": 4,
+      "page_path_template_before": "/members/{member_id}",
+      "action": {
+        "kind": "click",
+        "target": {
+          "kind": "role",
+          "role": "link",
+          "name": "View savings"
+        },
+        "purpose": "Open the member's savings account."
+      },
+      "decision_context": "Navigate using an observed control.",
+      "decision_context_source": "static action description; not model reasoning",
+      "execution_status": "completed"
+    },
+    {
+      "step": 5,
+      "page_path_template_before": "/members/{member_id}/accounts/savings",
+      "action": {
+        "kind": "read",
+        "target": {
+          "kind": "table_value",
+          "row_label": "Member ID"
+        },
+        "output_name": "member_id",
+        "purpose": "Read a declared account field from the visible table."
+      },
+      "decision_context": "Collect a requested output from the observed page.",
+      "decision_context_source": "static action description; not model reasoning",
+      "execution_status": "completed"
+    },
+    {
+      "step": 6,
+      "page_path_template_before": "/members/{member_id}/accounts/savings",
+      "action": {
+        "kind": "read",
+        "target": {
+          "kind": "table_value",
+          "row_label": "Account type"
+        },
+        "output_name": "account_type",
+        "purpose": "Read a declared account field from the visible table."
+      },
+      "decision_context": "Collect a requested output from the observed page.",
+      "decision_context_source": "static action description; not model reasoning",
+      "execution_status": "completed"
+    },
+    {
+      "step": 7,
+      "page_path_template_before": "/members/{member_id}/accounts/savings",
+      "action": {
+        "kind": "read",
+        "target": {
+          "kind": "table_value",
+          "row_label": "Available balance"
+        },
+        "output_name": "available_balance",
+        "purpose": "Read a declared account field from the visible table."
+      },
+      "decision_context": "Collect a requested output from the observed page.",
+      "decision_context_source": "static action description; not model reasoning",
+      "execution_status": "completed"
+    },
+    {
+      "step": 8,
+      "page_path_template_before": "/members/{member_id}/accounts/savings",
+      "action": {
+        "kind": "read",
+        "target": {
+          "kind": "table_value",
+          "row_label": "Currency"
+        },
+        "output_name": "currency",
+        "purpose": "Read a declared account field from the visible table."
+      },
+      "decision_context": "Collect a requested output from the observed page.",
+      "decision_context_source": "static action description; not model reasoning",
+      "execution_status": "completed"
+    }
+  ],
+  "outputs": {
+    "account_type": "[REDACTED]",
+    "available_balance": "[REDACTED]",
+    "currency": "[REDACTED]",
+    "member_id": "[REDACTED]"
+  },
+  "redaction_policy": "discovery_fixed_labels_and_templates_v1",
+  "compilation_source": false,
+  "limitations": [
+    "This is a sanitized derivative of the source record.",
+    "The source hash identifies the original bytes; it does not independently prove that a browser or model run occurred.",
+    "Decision context describes action purpose and is not a recorded model explanation."
+  ]
+}

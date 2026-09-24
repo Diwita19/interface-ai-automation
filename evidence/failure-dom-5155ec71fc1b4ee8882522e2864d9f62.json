@@ -1,0 +1,123 @@
+{
+  "evidence_version": 1,
+  "kind": "sanitized_dom",
+  "captured_at": "2026-09-23T22:04:33.570866+00:00",
+  "redaction_policy": "demo_static_labels_only_v1",
+  "scope": "main_document_body",
+  "snapshot": {
+    "tree": {
+      "node": "element",
+      "tag": "body",
+      "children": [
+        {
+          "node": "element",
+          "tag": "header",
+          "children": [
+            {
+              "node": "element",
+              "tag": "div",
+              "children": [
+                {
+                  "node": "element",
+                  "tag": "p",
+                  "children": [
+                    {
+                      "node": "text",
+                      "text": "[REDACTED]"
+                    }
+                  ]
+                },
+                {
+                  "node": "element",
+                  "tag": "h1",
+                  "children": [
+                    {
+                      "node": "text",
+                      "text": "Demo Credit Union"
+                    }
+                  ]
+                },
+                {
+                  "node": "element",
+                  "tag": "p",
+                  "children": [
+                    {
+                      "node": "text",
+                      "text": "[REDACTED]"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "node": "element",
+          "tag": "main",
+          "children": [
+            {
+              "node": "element",
+              "tag": "section",
+              "children": [
+                {
+                  "node": "element",
+                  "tag": "h2",
+                  "children": [
+                    {
+                      "node": "text",
+                      "text": "Member search"
+                    }
+                  ]
+                },
+                {
+                  "node": "element",
+                  "tag": "form",
+                  "children": [
+                    {
+                      "node": "element",
+                      "tag": "label",
+                      "children": [
+                        {
+                          "node": "text",
+                          "text": "Member ID"
+                        }
+                      ]
+                    },
+                    {
+                      "node": "element",
+                      "tag": "input",
+                      "children": [],
+                      "input_type": "text"
+                    },
+                    {
+                      "node": "element",
+                      "tag": "button",
+                      "children": [
+                        {
+                          "node": "text",
+                          "text": "Search"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "node": "element",
+          "tag": "footer",
+          "children": [
+            {
+              "node": "text",
+              "text": "[REDACTED]"
+            }
+          ]
+        }
+      ]
+    },
+    "truncated": false,
+    "visited_nodes": 40
+  }
+}
